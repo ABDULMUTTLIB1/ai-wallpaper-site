@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Wallpapers</title>
+</head>
+<body style="background:black; color:white; text-align:center">
+
+<h1>🔥 AI Wallpapers</h1>
+
+<select id="filter" onchange="load()">
+  <option value="all">All</option>
+  <option value="nature">Nature</option>
+  <option value="cars">Cars</option>
+  <option value="anime">Anime</option>
+  <option value="space">Space</option>
+</select>
+
+<div id="gallery"></div>
+
+<script>
+async function load() {
+  let res = await fetch("wallpapers.json");
+  let data = await res.json();
+  let filter = document.getElementById("filter").value;
+
+  let html = "";
+
+  data.forEach(item => {
+    if (filter === "all" || item.category === filter) {
+      html += `<img src="images/${item.file}" width="300"/>`;
+    }
+  });
+
+  document.getElementById("gallery").innerHTML = html;
+}
+
+load();
+</script>
+
+</body>
+</html>
