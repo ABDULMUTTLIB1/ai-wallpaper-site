@@ -1,0 +1,21 @@
+name: Auto Wallpapers
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Python
+        run: sudo apt update && sudo apt install python3-pip -y
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Run script
+        run: python3 generate.py
