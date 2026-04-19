@@ -1,7 +1,7 @@
 import requests, base64, json, os, random
 from datetime import datetime
 
-API_KEY = "sk-vGRM8hnKdskbQEspn0dAETBs4ZOzmyeD76u9M4pHT45Lb4j3"
+API_KEY = "sk-xxxxxxxx"
 URL = "https://api.stability.ai/v2beta/stable-image/generate/core"
 
 categories = {
