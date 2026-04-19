@@ -9,6 +9,7 @@ API_KEY = "sk-xxxxxxx"
 
 URL = "https://api.stability.ai/v2beta/stable-image/generate/core"
 
+
 os.makedirs("images", exist_ok=True)
 
 def generate(prompt):
