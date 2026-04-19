@@ -20,7 +20,13 @@ def generate(prompt):
         data={"prompt": prompt, "output_format": "jpeg"}
     )
 
-    img = base64.b64decode(res.json()['image'])
+    img = data = res.json()
+
+if "image" not in data:
+    print("API ERROR:", data)
+    return None
+
+img = base64.b64decode(data["image"])
     name = f"{int(datetime.now().timestamp())}_{random.randint(1,999)}.jpg"
 
     with open(f"images/{name}", "wb") as f:
