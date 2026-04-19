@@ -22,6 +22,7 @@ def generate(prompt):
 
         data = res.json()
 
+        # 🔥 IMPORTANT FIX
         if "image" not in data:
             print("API ERROR:", data)
             return None
@@ -41,9 +42,9 @@ def generate(prompt):
 
 
 prompts = [
-    "4K nature wallpaper",
-    "anime wallpaper",
-    "car wallpaper"
+    "4K ultra HD nature wallpaper",
+    "anime wallpaper 4k",
+    "luxury car wallpaper"
 ]
 
 new_data = []
