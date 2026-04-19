@@ -5,7 +5,7 @@ import os
 import random
 from datetime import datetime
 
-API_KEY = "YOUR_API_KEY_HERE"
+API_KEY = "sk-xxxxxxx"
 
 URL = "https://api.stability.ai/v2beta/stable-image/generate/core"
 
@@ -22,7 +22,6 @@ def generate(prompt):
 
         data = res.json()
 
-        # 🔥 IMPORTANT FIX
         if "image" not in data:
             print("API ERROR:", data)
             return None
@@ -44,13 +43,13 @@ def generate(prompt):
 prompts = [
     "4K ultra HD nature wallpaper",
     "anime wallpaper 4k",
-    "luxury car wallpaper"
+    "luxury sports car wallpaper"
 ]
 
 new_data = []
 
-for p in prompts:
-    file = generate(p)
+for prompt in prompts:
+    file = generate(prompt)
     if file:
         new_data.append({
             "file": file,
