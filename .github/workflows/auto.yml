@@ -4,11 +4,20 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  run:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
+
       - run: sudo apt update && sudo apt install python3-pip -y
       - run: pip install requests
+
       - run: python3 generate.py
+
+      - run: |
+          git config --global user.name "bot"
+          git config --global user.email "bot@mail.com"
+          git add .
+          git commit -m "auto wallpapers"
+          git push
