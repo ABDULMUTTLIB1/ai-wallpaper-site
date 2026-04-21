@@ -19,7 +19,7 @@ jobs:
         run: pip install requests
 
       - name: Run Script
-        run: python3 generate.py
+        - run: python3 ai-wallpaper-site/generate.py
 
       - name: Commit & Push
         run: |
