@@ -1,6 +1,8 @@
 name: Auto Wallpapers
 
 on:
+  schedule:
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 jobs:
@@ -10,14 +12,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: sudo apt update && sudo apt install python3-pip -y
-      - run: pip install requests
+      - name: Install Python
+        run: sudo apt update && sudo apt install python3-pip -y
 
-      - run: python3 generate.py
+      - name: Install Requests
+        run: pip install requests
 
-      - run: |
+      - name: Run Script
+        run: python3 generate.py
+
+      - name: Commit & Push
+        run: |
           git config --global user.name "bot"
           git config --global user.email "bot@mail.com"
           git add .
-          git commit -m "auto wallpapers"
+          git commit -m "auto wallpapers" || echo "No changes"
           git push
