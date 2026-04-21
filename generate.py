@@ -5,7 +5,7 @@ import os
 import random
 from datetime import datetime
 
-API_KEY = "YOUR_API_KEY_HERE"
+API_KEY = "sk-xxxxxxx"
 
 URL = "https://api.stability.ai/v2beta/stable-image/generate/core"
 
