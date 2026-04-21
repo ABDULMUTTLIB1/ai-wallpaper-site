@@ -5,7 +5,7 @@ import os
 import random
 from datetime import datetime
 
-API_KEY = "sk-xxxxxxx"
+API_KEY = "YOUR_API_KEY_HERE"
 
 URL = "https://api.stability.ai/v2beta/stable-image/generate/core"
 
@@ -13,7 +13,7 @@ os.makedirs("images", exist_ok=True)
 
 def generate(prompt):
     try:
-        response = requests.post(
+        res = requests.post(
             URL,
             headers={
                 "Authorization": f"Bearer {API_KEY}",
@@ -26,10 +26,10 @@ def generate(prompt):
             }
         )
 
-        data = response.json()
-        print("API RESPONSE:", data)  # debug
+        data = res.json()
+        print("API RESPONSE:", data)
 
-        # ✅ FIX: correct key
+        # ✅ FIXED PART
         if "artifacts" not in data:
             print("API ERROR:", data)
             return None
