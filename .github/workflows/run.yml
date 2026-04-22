@@ -1,0 +1,17 @@
+name: Run Wallpaper Generator
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: sudo apt update && sudo apt install python3-pip -y
+
+      - run: pip install requests
+
+      - run: python3 ai-wallpaper-site/generate.py
