@@ -1,69 +1,27 @@
-import requests
-import base64
-import json
 import os
+import json
 import random
 from datetime import datetime
 
-API_KEY = "sk-xxxxxxx"
-
-URL = "https://api.stability.ai/v2beta/stable-image/generate/core"
-
 os.makedirs("images", exist_ok=True)
 
-def generate(prompt):
-    try:
-        response = requests.post(
-            URL,
-            headers={
-                "Authorization": f"Bearer {API_KEY}",
-                "Accept": "application/json"
-            },
-            files={"none": ''},
-            data={
-                "prompt": prompt,
-                "output_format": "jpeg"
-            }
-        )
+def generate():
+    # fake image create (test purpose)
+    name = f"{int(datetime.now().timestamp())}_{random.randint(100,999)}.txt"
+    
+    with open(f"images/{name}", "w") as f:
+        f.write("test image file")
 
-        data = response.json()
-        print("API RESPONSE:", data)  # debug ke liye
-
-        # 👇 Correct key
-        if "artifacts" not in data:
-            print("API ERROR:", data)
-            return None
-
-        img_base64 = data["artifacts"][0]["base64"]
-        img = base64.b64decode(img_base64)
-
-        name = f"{int(datetime.now().timestamp())}_{random.randint(100,999)}.jpg"
-
-        with open(f"images/{name}", "wb") as f:
-            f.write(img)
-
-        return name
-
-    except Exception as e:
-        print("ERROR:", e)
-        return None
-
-
-prompts = [
-    "4K ultra HD nature wallpaper",
-    "anime wallpaper 4k",
-    "luxury sports car wallpaper"
-]
+    return name
 
 new_data = []
 
-for prompt in prompts:
-    file = generate(prompt)
-    if file:
-        new_data.append({
-            "file": file,
-            "category": "auto"
-        })
+for i in range(3):
+    file = generate()
+    new_data.append({
+        "file": file,
+        "category": "auto"
+    })
 
 try:
     with open("wallpapers.json", "r") as f:
