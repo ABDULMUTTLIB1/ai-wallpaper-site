@@ -10,13 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Install Python
-        run: |
-          sudo apt update
-          sudo apt install python3-pip -y
+        run: sudo apt update && sudo apt install python3-pip -y
 
       - name: Install Requests
         run: pip install requests
