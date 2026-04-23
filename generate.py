@@ -5,7 +5,7 @@ import os
 import random
 from datetime import datetime
 
-API_KEY = "YOUR_API_KEY"
+API_KEY = "sk-xxxxxxx"
 
 URL = "https://api.stability.ai/v2beta/stable-image/generate/core"
 
@@ -13,23 +13,25 @@ os.makedirs("images", exist_ok=True)
 
 def generate(prompt):
     try:
-        res = requests.post(
+        response = requests.post(
             URL,
             headers={
                 "Authorization": f"Bearer {API_KEY}",
                 "Accept": "application/json"
             },
+            files={"none": ''},
             data={
                 "prompt": prompt,
                 "output_format": "jpeg"
             }
         )
 
-        data = res.json()
-        print("API RESPONSE:", data)
+        data = response.json()
+        print("API RESPONSE:", data)  # debug ke liye
 
+        # 👇 Correct key
         if "artifacts" not in data:
-            print("ERROR:", data)
+            print("API ERROR:", data)
             return None
 
         img_base64 = data["artifacts"][0]["base64"]
@@ -48,9 +50,9 @@ def generate(prompt):
 
 
 prompts = [
-    "4K nature wallpaper",
-    "anime wallpaper",
-    "car wallpaper"
+    "4K ultra HD nature wallpaper",
+    "anime wallpaper 4k",
+    "luxury sports car wallpaper"
 ]
 
 new_data = []
