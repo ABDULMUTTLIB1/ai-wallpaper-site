@@ -1,7 +1,7 @@
 name: Auto Wallpapers
 
 on:
-  workflow_dispatch:   # manual run button
+  workflow_dispatch:
   schedule:
     - cron: "0 0 * * *"
 
