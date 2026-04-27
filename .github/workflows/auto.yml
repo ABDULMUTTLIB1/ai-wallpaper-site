@@ -6,6 +6,4 @@
     git add .
     git commit -m "auto wallpapers" || echo "No changes"
     
-    git pull origin main --rebase || echo "Pull skipped"
-    
-    git push origin HEAD:main
+    git push origin HEAD:main --force
