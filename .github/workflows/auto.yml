@@ -1,4 +1,4 @@
-- name: Commit & Push
+name: Commit & Push
   run: |
     git config --global user.name "bot"
     git config --global user.email "bot@mail.com"
