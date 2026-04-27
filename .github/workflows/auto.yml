@@ -1,6 +1,7 @@
 steps:
   - name: Commit & Push
-    run: 
+    run: |
+      ...
     git config --global user.name "bot"
     git config --global user.email "bot@mail.com"
     git add .
