@@ -1,10 +1,9 @@
 steps:
   - name: Commit & Push
     run: |
-      ...
-    git config --global user.name "bot"
-    git config --global user.email "bot@mail.com"
-    git add .
-    git commit -m "auto wallpapers" || echo "No changes"
-    git pull origin main --rebase || echo "Pull skipped"
-    git push origin HEAD:main
+      git config --global user.name "bot"
+      git config --global user.email "bot@mail.com"
+      git add .
+      git commit -m "auto wallpapers" || echo "No changes"
+      git pull origin main --rebase || echo "Pull skipped"
+      git push origin HEAD:main
