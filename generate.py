@@ -1,35 +1,8 @@
-import requests, json, datetime
-
-API_URL = "https://api.openai.com/v1/images/generations"
-API_KEY = "YOUR_API_KEY"
-
-def generate():
-    prompt = "ultra hd mobile wallpaper, dark aesthetic, 4k, trending"
-
-    headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json"
-    }
-
-    data = {
-        "model": "gpt-image-1",
-        "prompt": prompt,
-        "size": "1024x1792"
-    }
-
-    res = requests.post(API_URL, headers=headers, json=data)
-    img_url = res.json()["data"][0]["url"]
-
-    return img_url
-
+import json
+from datetime import datetime
 
 def save():
-    url = generate()
-
-    new_data = {
-        "url": url,
-        "date": str(datetime.datetime.now())
-    }
+    data = []
 
     try:
         with open("wallpapers.json", "r") as f:
@@ -37,10 +10,14 @@ def save():
     except:
         data = []
 
-    data.insert(0, new_data)
+    new_wallpaper = {
+        "url": "https://picsum.photos/1080/1920",
+        "date": str(datetime.now())
+    }
+
+    data.insert(0, new_wallpaper)
 
     with open("wallpapers.json", "w") as f:
         json.dump(data, f, indent=2)
-
 
 save()
