@@ -1,23 +1,60 @@
+import requests
 import json
+import os
 from datetime import datetime
 
-def save():
-    data = []
+API_KEY = os.getenv("OPENAI_API_KEY")
 
-    try:
-        with open("wallpapers.json", "r") as f:
-            data = json.load(f)
-    except:
-        data = []
+def generate(prompt):
+    res = requests.post(
+        "https://api.openai.com/v1/images/generations",
+        headers={
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json"
+        },
+        json={
+            "model": "gpt-image-1",
+            "prompt": prompt,
+            "size": "1024x1792"
+        }
+    )
 
-    new_wallpaper = {
-        "url": "https://picsum.photos/1080/1920",
-        "date": str(datetime.now())
-    }
+    data = res.json()
+    print(data)  # debug
 
-    data.insert(0, new_wallpaper)
+    if "data" not in data:
+        return None
 
-    with open("wallpapers.json", "w") as f:
-        json.dump(data, f, indent=2)
+    return data["data"][0]["url"]
 
-save()
+
+prompts = [
+    ("nature", "beautiful nature 4k wallpaper, ultra hd"),
+    ("cars", "luxury sports car wallpaper, 4k"),
+    ("anime", "anime wallpaper 4k, high quality"),
+    ("space", "galaxy space wallpaper 4k")
+]
+
+# load old data
+try:
+    with open("wallpapers.json", "r") as f:
+        old = json.load(f)
+except:
+    old = []
+
+new = []
+
+for category, prompt in prompts:
+    url = generate(prompt)
+    if url:
+        new.append({
+            "url": url,
+            "category": category,
+            "date": str(datetime.now())
+        })
+
+# save
+with open("wallpapers.json", "w") as f:
+    json.dump(new + old, f, indent=2)
+
+print("AI wallpapers added ✅")
