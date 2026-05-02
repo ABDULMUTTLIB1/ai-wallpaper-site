@@ -2,10 +2,66 @@
 <html>
 <head>
   <title>AI Wallpapers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      background: #0d0d0d;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+      margin: 0;
+    }
+
+    h1 {
+      padding: 15px;
+    }
+
+    #filter {
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      background: #222;
+      color: white;
+      border: none;
+    }
+
+    #gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .card {
+      position: relative;
+    }
+
+    img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .download {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.6);
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+  </style>
 </head>
-<body style="background:black; color:white; text-align:center">
+
+<body>
 
 <h1>🔥 AI Wallpapers</h1>
+
+<select id="filter" onchange="load()">
+  <option value="all">All</option>
+</select>
 
 <div id="gallery"></div>
 
@@ -17,7 +73,12 @@ async function load() {
   let html = "";
 
   data.forEach(item => {
-    html += `<img src="${item.url}" width="300" style="margin:10px"/>`;
+    html += `
+      <div class="card">
+        <img src="${item.url}" />
+        <a class="download" href="${item.url}" download>Download</a>
+      </div>
+    `;
   });
 
   document.getElementById("gallery").innerHTML = html;
