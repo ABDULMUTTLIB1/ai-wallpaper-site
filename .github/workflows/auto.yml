@@ -2,7 +2,8 @@
   run: |
     git config --global user.name "bot"
     git config --global user.email "bot@mail.com"
-    git pull origin main --rebase || echo "pull skip"
+    git fetch origin
+    git reset --hard origin/main
     git add .
     git commit -m "auto wallpapers" || echo "No changes"
-    git push origin HEAD:main
+    git push origin HEAD:main --force
