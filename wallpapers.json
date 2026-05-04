@@ -1,18 +1,22 @@
 [
   {
-    "url": "https://picsum.photos/1080/1920",
-    "date": "2026-05-02 06:31:56.714815"
+    "url": "https://picsum.photos/1080/1920?1",
+    "category": "nature",
+    "date": "2026-05-02"
   },
   {
-    "url": "https://picsum.photos/1080/1920",
-    "date": "2026-05-01 07:53:52.972712"
+    "url": "https://picsum.photos/1080/1920?2",
+    "category": "cars",
+    "date": "2026-05-01"
   },
   {
-    "url": "https://picsum.photos/1080/1920",
-    "date": "2026-04-30 18:30:11.089373"
+    "url": "https://picsum.photos/1080/1920?3",
+    "category": "anime",
+    "date": "2026-04-30"
   },
   {
-    "url": "https://picsum.photos/1080/1920",
-    "date": "2026-04-27 18:40:41.767900"
+    "url": "https://picsum.photos/1080/1920?4",
+    "category": "space",
+    "date": "2026-04-27"
   }
 ]
