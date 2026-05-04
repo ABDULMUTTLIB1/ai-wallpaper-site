@@ -1,12 +1,35 @@
-- name: Commit & Push
-  run: |
-    git config --global user.name "bot"
-    git config --global user.email "bot@mail.com"
+name: Auto Wallpapers
 
-    git fetch origin
-    git reset --hard origin/main
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
 
-    git add .
-    git commit -m "auto wallpapers" || echo "No changes"
+jobs:
+  run:
+    runs-on: ubuntu-latest
 
-    git push origin main --force
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Python
+        run: sudo apt update && sudo apt install python3-pip -y
+
+      - name: Install Requests
+        run: pip install requests
+
+      - name: Run Script
+        run: python3 generate.py
+
+      - name: Commit & Push
+        run: |
+          git config --global user.name "bot"
+          git config --global user.email "bot@mail.com"
+
+          git fetch origin
+          git reset --hard origin/main
+
+          git add .
+          git commit -m "auto wallpapers" || echo "No changes"
+
+          git push origin main --force
