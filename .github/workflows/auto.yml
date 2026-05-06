@@ -28,10 +28,7 @@ jobs:
           git config --global user.name "bot"
           git config --global user.email "bot@mail.com"
 
-          git fetch origin
-          git reset --hard origin/main
-
           git add .
           git commit -m "auto wallpapers" || echo "No changes"
 
-          git push origin main --force
+          git push origin main
