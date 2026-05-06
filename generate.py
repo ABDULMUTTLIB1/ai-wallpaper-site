@@ -1,54 +1,35 @@
-import requests
-import json
-import datetime
 import os
+import json
+from datetime import datetime
+from openai import OpenAI
 
-API_KEY = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-def generate_image(prompt):
-    url = "https://api.openai.com/v1/images/generations"
+prompts = [
+    "ultra HD nature wallpaper, cinematic lighting",
+    "futuristic car wallpaper, neon lights, 4K",
+    "anime wallpaper, detailed, high quality",
+    "space galaxy wallpaper, stars, 4K ultra HD"
+]
 
-    headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json"
-    }
+data = []
 
-    data = {
-        "model": "gpt-image-1",
-        "prompt": prompt,
-        "size": "1024x1792"
-    }
+for p in prompts:
+    result = client.images.generate(
+        model="gpt-image-1",
+        prompt=p,
+        size="1024x1792"
+    )
 
-    res = requests.post(url, headers=headers, json=data)
-    result = res.json()
+    image_url = result.data[0].url
 
-    print(result)  # debug
+    data.append({
+        "url": image_url,
+        "category": p.split()[0],
+        "date": str(datetime.now())
+    })
 
-    if "data" not in result:
-        raise Exception(f"API Error: {result}")
+with open("wallpapers.json", "w") as f:
+    json.dump(data, f, indent=2)
 
-    return result["data"][0]["url"]
-
-def save():
-    prompts = [
-        ("Beautiful nature wallpaper, 4k", "nature"),
-        ("Luxury sports car wallpaper, cinematic", "cars"),
-        ("Anime wallpaper, ultra HD", "anime"),
-        ("Galaxy space wallpaper, 4k", "space")
-    ]
-
-    wallpapers = []
-
-    for prompt, category in prompts:
-        img_url = generate_image(prompt)
-
-        wallpapers.append({
-            "url": img_url,
-            "category": category,
-            "date": str(datetime.datetime.now())
-        })
-
-    with open("wallpapers.json", "w") as f:
-        json.dump(wallpapers, f, indent=2)
-
-save()
+print("✅ AI wallpapers generated!")
