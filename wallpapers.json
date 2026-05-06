@@ -1,22 +1,56 @@
-[
-  {
-    "url": 
-    "https://picsum.photos/1080/1920?1","category": "nature",
-    "date": "2026-05-02"
-  },
-  {
-    "url": 
-  "https://picsum.photos/1080/1920?2","category": "cars",
-    "date": "2026-05-01"
-  },
-  {
-    "url":
-  "https://picsum.photos/1080/1920?3", "category": "anime",
-    "date": "2026-04-30"
-  },
-  {
-    "url":
-    "https://picsum.photos/1080/1920?4","category": "space",
-    "date": "2026-04-27"
-  }
-]
+import os
+import json
+from datetime import datetime
+import requests
+
+API_KEY = os.getenv("OPENAI_API_KEY")
+
+def generate_image(prompt):
+    url = "https://api.openai.com/v1/images/generations"
+
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    data = {
+        "model": "gpt-image-1",
+        "prompt": prompt,
+        "size": "1024x1792"
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+
+    print("STATUS:", response.status_code)
+    print("RESPONSE:", response.text)
+
+    if response.status_code == 200:
+        return response.json()["data"][0]["url"]
+    else:
+        return None
+
+
+categories = {
+    "nature": "beautiful nature landscape, ultra HD wallpaper",
+    "cars": "luxury sports car, cinematic lighting, ultra HD",
+    "anime": "anime wallpaper, vibrant colors, 4k",
+    "space": "galaxy, stars, space art, ultra HD wallpaper"
+}
+
+wallpapers = []
+
+for cat, prompt in categories.items():
+    img = generate_image(prompt)
+
+    if img:
+        wallpapers.append({
+            "url": img,
+            "category": cat,
+            "date": datetime.now().strftime("%Y-%m-%d")
+        })
+
+# Save JSON
+with open("wallpapers.json", "w") as f:
+    json.dump(wallpapers, f, indent=2)
+
+print("✅ Wallpapers updated!")
