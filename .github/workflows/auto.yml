@@ -16,10 +16,12 @@ jobs:
         run: sudo apt update && sudo apt install python3-pip -y
 
       - name: Install Requests
-        run: pip install requests
+        run: pip install requests openai
 
       - name: Run Script
         run: python3 generate.py
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       - name: Commit & Push
         run: |
