@@ -1,60 +1,54 @@
 import requests
 import json
+import datetime
 import os
-from datetime import datetime
 
 API_KEY = os.getenv("OPENAI_API_KEY")
 
-def generate(prompt):
-    res = requests.post(
-        "https://api.openai.com/v1/images/generations",
-        headers={
-            "Authorization": f"Bearer {API_KEY}",
-            "Content-Type": "application/json"
-        },
-        json={
-            "model": "gpt-image-1",
-            "prompt": prompt,
-            "size": "1024x1792"
-        }
-    )
+def generate_image(prompt):
+    url = "https://api.openai.com/v1/images/generations"
 
-    data = res.json()
-    print(data)  # debug
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
+    }
 
-    if "data" not in data:
-        return None
+    data = {
+        "model": "gpt-image-1",
+        "prompt": prompt,
+        "size": "1024x1792"
+    }
 
-    return data["data"][0]["url"]
+    res = requests.post(url, headers=headers, json=data)
+    result = res.json()
 
+    print(result)  # debug
 
-prompts = [
-    ("nature", "beautiful nature 4k wallpaper, ultra hd"),
-    ("cars", "luxury sports car wallpaper, 4k"),
-    ("anime", "anime wallpaper 4k, high quality"),
-    ("space", "galaxy space wallpaper 4k")
-]
+    if "data" not in result:
+        raise Exception(f"API Error: {result}")
 
-# load old data
-try:
-    with open("wallpapers.json", "r") as f:
-        old = json.load(f)
-except:
-    old = []
+    return result["data"][0]["url"]
 
-new = []
+def save():
+    prompts = [
+        ("Beautiful nature wallpaper, 4k", "nature"),
+        ("Luxury sports car wallpaper, cinematic", "cars"),
+        ("Anime wallpaper, ultra HD", "anime"),
+        ("Galaxy space wallpaper, 4k", "space")
+    ]
 
-for category, prompt in prompts:
-    url = generate(prompt)
-    if url:
-        new.append({
-            "url": url,
+    wallpapers = []
+
+    for prompt, category in prompts:
+        img_url = generate_image(prompt)
+
+        wallpapers.append({
+            "url": img_url,
             "category": category,
-            "date": str(datetime.now())
+            "date": str(datetime.datetime.now())
         })
 
-# save
-with open("wallpapers.json", "w") as f:
-    json.dump(new + old, f, indent=2)
+    with open("wallpapers.json", "w") as f:
+        json.dump(wallpapers, f, indent=2)
 
-print("AI wallpapers added ✅")
+save()
