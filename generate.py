@@ -3,22 +3,22 @@ from datetime import datetime
 
 wallpapers = [
     {
-        "url": "https://picsum.photos/1080/1920?random=1",
+        "url": "https://picsum.photos/id/10/1080/1920",
         "category": "nature",
         "date": datetime.now().strftime("%Y-%m-%d")
     },
     {
-        "url": "https://picsum.photos/1080/1920?random=2",
+        "url": "https://picsum.photos/id/20/1080/1920",
         "category": "cars",
         "date": datetime.now().strftime("%Y-%m-%d")
     },
     {
-        "url": "https://picsum.photos/1080/1920?random=3",
+        "url": "https://picsum.photos/id/30/1080/1920",
         "category": "anime",
         "date": datetime.now().strftime("%Y-%m-%d")
     },
     {
-        "url": "https://picsum.photos/1080/1920?random=4",
+        "url": "https://picsum.photos/id/40/1080/1920",
         "category": "space",
         "date": datetime.now().strftime("%Y-%m-%d")
     }
