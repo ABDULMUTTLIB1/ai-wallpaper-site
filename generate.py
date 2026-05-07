@@ -27,4 +27,4 @@ wallpapers = [
 with open("wallpapers.json", "w") as f:
     json.dump(wallpapers, f, indent=2)
 
-print("Wallpapers updated!")
+print("✅ Wallpapers updated!")
