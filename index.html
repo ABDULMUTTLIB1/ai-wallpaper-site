@@ -1,15 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>AI Wallpapers</title>
+
+  <style>
+
+    body{
+      margin:0;
+      font-family:Arial;
+      background:#111;
+      color:white;
+      text-align:center;
+    }
+
+    h1{
+      padding:20px;
+    }
+
+    #topbar{
+      margin-bottom:20px;
+    }
+
+    select{
+      padding:10px;
+      border-radius:10px;
+      border:none;
+      background:#222;
+      color:white;
+    }
+
+    #gallery{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:20px;
+      padding:20px;
+    }
+
+    .card{
+      background:#1a1a1a;
+      border-radius:15px;
+      overflow:hidden;
+    }
+
+    .card img{
+      width:100%;
+      height:350px;
+      object-fit:cover;
+    }
+
+    .buttons{
+      display:flex;
+      gap:10px;
+      padding:10px;
+    }
+
+    .btn{
+      flex:1;
+      padding:10px;
+      border:none;
+      border-radius:10px;
+      background:#ff3c3c;
+      color:white;
+      cursor:pointer;
+    }
+
+    .btn:hover{
+      background:red;
+    }
+
+    #popup{
+      display:none;
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background:rgba(0,0,0,0.95);
+      justify-content:center;
+      align-items:center;
+      z-index:999;
+    }
+
+    #popup img{
+      width:90%;
+      max-width:500px;
+      border-radius:20px;
+    }
+
+    #close{
+      position:absolute;
+      top:20px;
+      right:30px;
+      font-size:40px;
+      color:white;
+      cursor:pointer;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<h1>🔥 AI Wallpapers</h1>
+
+<div id="topbar">
+
+<select id="filter" onchange="loadWallpapers()">
+  <option value="all">All</option>
+  <option value="nature">Nature</option>
+  <option value="cars">Cars</option>
+  <option value="anime">Anime</option>
+  <option value="space">Space</option>
+</select>
+
+</div>
+
+<div id="gallery"></div>
+
+<div id="popup">
+  <span id="close" onclick="closePopup()">×</span>
+  <img id="popupImg">
+</div>
+
 <script>
 
-async function loadWallpapers() {
+async function loadWallpapers(){
 
-  let res = await fetch("wallpapers.json");
-  let data = await res.json();
+  let response = await fetch("wallpapers.json");
+
+  let data = await response.json();
 
   let filter = document.getElementById("filter").value;
 
   let html = "";
 
-  data.reverse().forEach(item => {
+  data.forEach(item => {
 
     if(filter === "all" || item.category === filter){
 
@@ -42,11 +168,11 @@ async function loadWallpapers() {
   document.getElementById("gallery").innerHTML = html;
 }
 
-function openPopup(src){
+function openPopup(url){
 
   document.getElementById("popup").style.display = "flex";
 
-  document.getElementById("popupImg").src = src;
+  document.getElementById("popupImg").src = url;
 }
 
 function closePopup(){
@@ -63,10 +189,9 @@ function shareWallpaper(url){
       url:url
     });
 
-  } else {
+  }else{
 
     alert("Sharing not supported");
-
   }
 }
 
@@ -78,7 +203,7 @@ async function downloadWallpaper(url){
 
     const blob = await response.blob();
 
-    const blobUrl = window.URL.createObjectURL(blob);
+    const blobUrl = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
 
@@ -92,15 +217,17 @@ async function downloadWallpaper(url){
 
     document.body.removeChild(a);
 
-    window.URL.revokeObjectURL(blobUrl);
+    URL.revokeObjectURL(blobUrl);
 
-  } catch(error){
+  }catch(error){
 
     alert("Download failed");
-
   }
 }
 
 loadWallpapers();
 
 </script>
+
+</body>
+</html>
