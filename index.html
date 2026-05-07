@@ -70,7 +70,6 @@
       border-radius:10px;
       background:#ff3c3c;
       color:white;
-      text-decoration:none;
       font-weight:bold;
       cursor:pointer;
     }
@@ -129,12 +128,14 @@
 <div id="gallery"></div>
 
 <!-- Fullscreen popup -->
+
 <div id="popup">
   <span id="close" onclick="closePopup()">×</span>
   <img id="popupImg">
 </div>
 
 <script>
+
 async function loadWallpapers() {
 
   let res = await fetch("wallpapers.json");
@@ -155,16 +156,17 @@ async function loadWallpapers() {
         onclick="openPopup('${item.url}')">
 
         <div class="buttons">
-          <a class="btn"
-          href="${item.url}"
-          download>
+
+          <button class="btn"
+          onclick="downloadWallpaper('${item.url}')">
           Download
-          </a>
+          </button>
 
           <button class="btn"
           onclick="shareWallpaper('${item.url}')">
           Share
           </button>
+
         </div>
 
       </div>
@@ -188,17 +190,35 @@ function closePopup(){
 function shareWallpaper(url){
 
   if(navigator.share){
+
     navigator.share({
       title:"AI Wallpaper",
       url:url
     });
-  }
-  else{
+
+  } else {
+
     alert("Sharing not supported");
+
   }
 }
 
+function downloadWallpaper(url){
+
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.target = "_blank";
+
+  document.body.appendChild(link);
+
+  link.click();
+
+  document.body.removeChild(link);
+}
+
 loadWallpapers();
+
 </script>
 
 </body>
