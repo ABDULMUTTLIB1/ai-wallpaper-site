@@ -203,23 +203,25 @@ function shareWallpaper(url){
   }
 }
 
-function downloadWallpaper(url){
+async function downloadWallpaper(url){
 
-  const link = document.createElement("a");
+  const response = await fetch(url);
 
-  link.href = url;
-  link.target = "_blank";
+  const blob = await response.blob();
 
-  document.body.appendChild(link);
+  const blobUrl = window.URL.createObjectURL(blob);
 
-  link.click();
+  const a = document.createElement("a");
 
-  document.body.removeChild(link);
+  a.href = blobUrl;
+
+  a.download = "wallpaper.jpg";
+
+  document.body.appendChild(a);
+
+  a.click();
+
+  document.body.removeChild(a);
+
+  window.URL.revokeObjectURL(blobUrl);
 }
-
-loadWallpapers();
-
-</script>
-
-</body>
-</html>
