@@ -1,259 +1,58 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <title>AI Wallpapers</title>
-
-  <style>
-
-    body{
-      margin:0;
-      font-family:Arial;
-      background:#111;
-      color:white;
-      text-align:center;
-    }
-
-    h1{
-      padding:20px;
-    }
-
-    #topbar{
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom:20px;
-    }
-
-    select, input{
-      padding:12px;
-      border-radius:10px;
-      border:none;
-      background:#222;
-      color:white;
-      font-size:16px;
-    }
-
-    input{
-      width:220px;
-    }
-
-    /* LOADER */
-
-    #loader{
-      position:fixed;
-      top:0;
-      left:0;
-      width:100%;
-      height:100%;
-      background:#111;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      z-index:9999;
-    }
-
-    .spin{
-      width:60px;
-      height:60px;
-      border:6px solid #333;
-      border-top:6px solid #ff3c3c;
-      border-radius:50%;
-      animation:spin 1s linear infinite;
-    }
-
-    @keyframes spin{
-      100%{
-        transform:rotate(360deg);
-      }
-    }
-
-    #loader p{
-      margin-top:15px;
-      color:white;
-      font-size:18px;
-    }
-
-    #gallery{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:20px;
-      padding:20px;
-    }
-
-    .card{
-      background:#1a1a1a;
-      border-radius:15px;
-      overflow:hidden;
-      transition:0.3s;
-    }
-
-    .card:hover{
-      transform:scale(1.03);
-    }
-
-    .card img{
-      width:100%;
-      height:350px;
-      object-fit:cover;
-    }
-
-    .buttons{
-      display:flex;
-      gap:10px;
-      padding:10px;
-    }
-
-    .btn{
-      flex:1;
-      padding:10px;
-      border:none;
-      border-radius:10px;
-      background:#ff3c3c;
-      color:white;
-      cursor:pointer;
-      font-weight:bold;
-    }
-
-    .btn:hover{
-      background:red;
-    }
-
-    #popup{
-      display:none;
-      position:fixed;
-      top:0;
-      left:0;
-      width:100%;
-      height:100%;
-      background:rgba(0,0,0,0.95);
-      justify-content:center;
-      align-items:center;
-      z-index:999;
-    }
-
-    #popup img{
-      width:90%;
-      max-width:500px;
-      border-radius:20px;
-    }
-
-    #close{
-      position:absolute;
-      top:20px;
-      right:30px;
-      font-size:40px;
-      color:white;
-      cursor:pointer;
-    }
-
-  </style>
-</head>
-
-<body>
-
-<h1>🔥 AI Wallpapers</h1>
-
-<div id="topbar">
-
-<input
-type="text"
-id="search"
-placeholder="Search wallpapers..."
-onkeyup="loadWallpapers()">
-
-<select <select id="filter" onchange="loadWallpapers()">
-
-<option value="all">All</option>
-
-<option value="naruto">Naruto</option>
-
-<option value="dragonball">Dragon Ball</option>
-
-<option value="onepiece">One Piece</option>
-
-<option value="cars">Cars</option>
-
-<option value="nature">Nature</option>
-
-<option value="space">Space</option>
-
-<option value="gaming">Gaming</option>
-
-<option value="animals">Animals</option>
-
-<option value="city">City</option>
-
-</select>
-<!-- Loader -->
-
-<div id="loader">
-  <div class="spin"></div>
-  <p>Loading Wallpapers...</p>
-</div>
-
-<div id="gallery"></div>
-
-<!-- Popup -->
-
-<div id="popup">
-  <span id="close" onclick="closePopup()">×</span>
-  <img id="popupImg">
-</div>
-
 <script>
 
-async function loadWallpapers(){
+function generateWallpapers(){
 
-  let response = await fetch("wallpapers.json");
+  let search = document
+  .getElementById("search")
+  .value
+  .trim();
 
-  let data = await response.json();
+  let filter = document
+  .getElementById("filter")
+  .value;
 
-  let filter = document.getElementById("filter").value;
+  let query = search || filter;
 
-  let search = document.getElementById("search").value.toLowerCase();
+  if(query === "all" || query === ""){
+    query = "wallpaper";
+  }
 
-  let html = "";
+  let gallery = document.getElementById("gallery");
 
-  data.forEach(item => {
+  gallery.innerHTML = "";
 
-    let category = item.category.toLowerCase();
+  for(let i=1; i<=50; i++){
 
-    if(
-      (filter === "all" || item.category === filter)
-      &&
-      category.includes(search) || item.title.toLowerCase().includes(search)
-    ){
+    let random = Math.floor(Math.random()*100000);
 
-      html += `
-      <div class="card">
+    let imageUrl =
+    `https://source.unsplash.com/featured/1440x2560/?${query}&sig=${random}`;
 
-        <img src="${item.url}"
-        onclick="openPopup('${item.url}')">
+    gallery.innerHTML += `
 
-        <div class="buttons">
+    <div class="card">
 
-          <button class="btn"
-          onclick="downloadWallpaper('${item.url}')">
-          Download
-          </button>
+      <img
+      src="${imageUrl}"
+      onclick="openPopup('${imageUrl}')">
 
-          <button class="btn"
-          onclick="shareWallpaper('${item.url}')">
-          Share
-          </button>
+      <div class="buttons">
 
-        </div>
+        <button class="btn"
+        onclick="downloadWallpaper('${imageUrl}')">
+        Download
+        </button>
+
+        <button class="btn"
+        onclick="shareWallpaper('${imageUrl}')">
+        Share
+        </button>
 
       </div>
-      `;
-    }
 
-  });
-
-  document.getElementById("gallery").innerHTML = html;
+    </div>
+    `;
+  }
 
   document.getElementById("loader").style.display = "none";
 }
@@ -275,7 +74,7 @@ function shareWallpaper(url){
   if(navigator.share){
 
     navigator.share({
-      title:"AI Wallpaper",
+      title:"Wallpaper",
       url:url
     });
 
@@ -315,9 +114,14 @@ async function downloadWallpaper(url){
   }
 }
 
-loadWallpapers();
+document
+.getElementById("search")
+.addEventListener("keyup", generateWallpapers);
+
+document
+.getElementById("filter")
+.addEventListener("change", generateWallpapers);
+
+generateWallpapers();
 
 </script>
-
-</body>
-</html>
