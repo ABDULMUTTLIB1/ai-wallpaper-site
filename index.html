@@ -19,15 +19,24 @@
     }
 
     #topbar{
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
       margin-bottom:20px;
     }
 
-    select{
-      padding:10px;
+    select, input{
+      padding:12px;
       border-radius:10px;
       border:none;
       background:#222;
       color:white;
+      font-size:16px;
+    }
+
+    input{
+      width:220px;
     }
 
     /* LOADER */
@@ -78,6 +87,11 @@
       background:#1a1a1a;
       border-radius:15px;
       overflow:hidden;
+      transition:0.3s;
+    }
+
+    .card:hover{
+      transform:scale(1.03);
     }
 
     .card img{
@@ -100,6 +114,7 @@
       background:#ff3c3c;
       color:white;
       cursor:pointer;
+      font-weight:bold;
     }
 
     .btn:hover{
@@ -143,6 +158,12 @@
 
 <div id="topbar">
 
+<input
+type="text"
+id="search"
+placeholder="Search wallpapers..."
+onkeyup="loadWallpapers()">
+
 <select id="filter" onchange="loadWallpapers()">
   <option value="all">All</option>
   <option value="nature">Nature</option>
@@ -153,7 +174,7 @@
 
 </div>
 
-<!-- LOADER -->
+<!-- Loader -->
 
 <div id="loader">
   <div class="spin"></div>
@@ -161,6 +182,8 @@
 </div>
 
 <div id="gallery"></div>
+
+<!-- Popup -->
 
 <div id="popup">
   <span id="close" onclick="closePopup()">×</span>
@@ -177,11 +200,19 @@ async function loadWallpapers(){
 
   let filter = document.getElementById("filter").value;
 
+  let search = document.getElementById("search").value.toLowerCase();
+
   let html = "";
 
   data.forEach(item => {
 
-    if(filter === "all" || item.category === filter){
+    let category = item.category.toLowerCase();
+
+    if(
+      (filter === "all" || item.category === filter)
+      &&
+      category.includes(search)
+    ){
 
       html += `
       <div class="card">
