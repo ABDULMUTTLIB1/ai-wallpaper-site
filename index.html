@@ -224,7 +224,7 @@ async function loadWallpapers(){
     if(
       (filter === "all" || item.category === filter)
       &&
-      category.includes(search)
+      category.includes(search) || item.title.toLowerCase().includes(search)
     ){
 
       html += `
