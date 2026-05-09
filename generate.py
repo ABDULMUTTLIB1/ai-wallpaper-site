@@ -1,126 +1,76 @@
 import json
 import random
 from datetime import datetime
+from urllib.parse import quote
 
-categories = {
+search_terms = [
 
-    "naruto":
-    [
-        "naruto anime wallpaper",
-        "sasuke uchiha",
-        "itachi uchiha",
-        "hokage naruto",
-        "akatsuki anime"
-    ],
+    "naruto",
+    "dragon ball",
+    "one piece",
+    "anime",
+    "goku",
+    "itachi",
+    "luffy",
 
-    "dragonball":
-    [
-        "dragon ball z",
-        "goku ultra instinct",
-        "vegeta blue",
-        "dragon ball anime",
-        "gohan beast"
-    ],
+    "bmw",
+    "ferrari",
+    "lamborghini",
+    "bugatti",
+    "sports car",
 
-    "onepiece":
-    [
-        "one piece luffy",
-        "zoro anime",
-        "sanji wallpaper",
-        "gear 5 luffy",
-        "one piece crew"
-    ],
+    "mountains",
+    "forest",
+    "sky",
+    "river",
+    "waterfall",
+    "nature",
+    "sunset",
 
-    "cars":
-    [
-        "lamborghini",
-        "ferrari",
-        "bugatti",
-        "bmw sports car",
-        "nissan gtr",
-        "rolls royce",
-        "porsche"
-    ],
+    "space",
+    "galaxy",
+    "planet",
+    "stars",
 
-    "nature":
-    [
-        "mountains",
-        "green forest",
-        "blue sky",
-        "river nature",
-        "waterfall",
-        "sunset landscape",
-        "snow mountains"
-    ],
+    "pubg",
+    "gaming setup",
+    "cyberpunk",
 
-    "space":
-    [
-        "galaxy",
-        "stars universe",
-        "planet wallpaper",
-        "moon space",
-        "nebula",
-        "astronaut"
-    ],
+    "lion",
+    "wolf",
+    "tiger",
+    "cat",
 
-    "gaming":
-    [
-        "pubg wallpaper",
-        "free fire",
-        "gta 5",
-        "minecraft",
-        "call of duty",
-        "cyberpunk game"
-    ],
+    "tokyo",
+    "dubai",
+    "new york city"
 
-    "animals":
-    [
-        "lion",
-        "wolf",
-        "tiger",
-        "cat",
-        "dog",
-        "eagle",
-        "horse"
-    ],
-
-    "city":
-    [
-        "tokyo night",
-        "new york city",
-        "dubai skyline",
-        "rain city",
-        "cyber city"
-    ]
-
-}
+]
 
 wallpapers = []
 
-for category, keywords in categories.items():
+for i in range(100):
 
-    for i in range(8):
+    keyword = random.choice(search_terms)
 
-        random_id = random.randint(1, 1000)
+    encoded = quote(keyword)
 
-        wallpapers.append({
+    url = f"https://source.unsplash.com/featured/1440x2560/?{encoded}"
 
-            "url":
-            f"https://picsum.photos/id/{random_id}/1440/2560",
+    wallpapers.append({
 
-            "category": category,
+        "url": url,
 
-            "title": random.choice(keywords),
+        "category": keyword,
 
-            "date":
-            datetime.now().strftime("%Y-%m-%d")
+        "title": keyword.title(),
 
-        })
+        "date": datetime.now().strftime("%Y-%m-%d")
 
-random.shuffle(wallpapers)
+    })
 
 with open("wallpapers.json", "w") as f:
 
     json.dump(wallpapers, f, indent=2)
 
-print("✅ Premium Wallpapers Updated!")
+print("✅ Unlimited Wallpapers Generated!")
