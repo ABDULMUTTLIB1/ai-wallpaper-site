@@ -5,11 +5,13 @@ function generateWallpapers(){
   let search = document
   .getElementById("search")
   .value
-  .trim();
+  .trim()
+  .toLowerCase();
 
   let filter = document
   .getElementById("filter")
-  .value;
+  .value
+  .toLowerCase();
 
   let query = search || filter;
 
@@ -21,12 +23,14 @@ function generateWallpapers(){
 
   gallery.innerHTML = "";
 
+  document.getElementById("loader").style.display = "block";
+
   for(let i=1; i<=50; i++){
 
     let random = Math.floor(Math.random()*100000);
 
     let imageUrl =
-    `https://source.unsplash.com/featured/1440x2560/?${query}&sig=${random}`;
+    `https://picsum.photos/720/1280?random=${random}`;
 
     gallery.innerHTML += `
 
@@ -34,6 +38,7 @@ function generateWallpapers(){
 
       <img
       src="${imageUrl}"
+      loading="lazy"
       onclick="openPopup('${imageUrl}')">
 
       <div class="buttons">
@@ -54,7 +59,9 @@ function generateWallpapers(){
     `;
   }
 
-  document.getElementById("loader").style.display = "none";
+  setTimeout(()=>{
+    document.getElementById("loader").style.display = "none";
+  },1000);
 }
 
 function openPopup(url){
