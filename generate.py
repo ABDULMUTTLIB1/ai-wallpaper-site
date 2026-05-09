@@ -1,28 +1,20 @@
 import json
+import random
 from datetime import datetime
 
-wallpapers = [
-    {
-        "url": "https://picsum.photos/id/10/1080/1920",
-        "category": "nature",
+categories = ["nature", "cars", "anime", "space"]
+
+wallpapers = []
+
+for cat in categories:
+
+    random_id = random.randint(1, 1000)
+
+    wallpapers.append({
+        "url": f"https://picsum.photos/id/{random_id}/1080/1920",
+        "category": cat,
         "date": datetime.now().strftime("%Y-%m-%d")
-    },
-    {
-        "url": "https://picsum.photos/id/20/1080/1920",
-        "category": "cars",
-        "date": datetime.now().strftime("%Y-%m-%d")
-    },
-    {
-        "url": "https://picsum.photos/id/30/1080/1920",
-        "category": "anime",
-        "date": datetime.now().strftime("%Y-%m-%d")
-    },
-    {
-        "url": "https://picsum.photos/id/40/1080/1920",
-        "category": "space",
-        "date": datetime.now().strftime("%Y-%m-%d")
-    }
-]
+    })
 
 with open("wallpapers.json", "w") as f:
     json.dump(wallpapers, f, indent=2)
