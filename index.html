@@ -1,232 +1,111 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>AI Wallpapers</title>
-
-<style>
-
-body{
-  margin:0;
-  background:#000;
-  color:white;
-  font-family:Arial;
-  text-align:center;
-}
-
-h1{
-  margin-top:20px;
-}
-
-.topbar{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  margin:20px;
-  flex-wrap:wrap;
-}
-
-input,select{
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:#1c1c1c;
-  color:white;
-  font-size:16px;
-}
-
-#gallery{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:15px;
-  padding:15px;
-}
-
-.card{
-  background:#111;
-  border-radius:16px;
-  overflow:hidden;
-}
-
-.card img{
-  width:100%;
-  height:320px;
-  object-fit:cover;
-  cursor:pointer;
-}
-
-.buttons{
-  display:flex;
-  gap:8px;
-  padding:10px;
-}
-
-.btn{
-  flex:1;
-  border:none;
-  padding:10px;
-  border-radius:10px;
-  background:#ff3b3b;
-  color:white;
-  font-weight:bold;
-}
-
-#popup{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.9);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:999;
-}
-
-#popup img{
-  max-width:90%;
-  max-height:90%;
-  border-radius:20px;
-}
-
-.close{
-  position:absolute;
-  top:20px;
-  right:25px;
-  font-size:30px;
-  color:white;
-  cursor:pointer;
-}
-
-</style>
-</head>
-
-<body>
-
-<h1>🔥 AI Wallpapers</h1>
-
-<div class="topbar">
-
-<input
-type="text"
-id="search"
-placeholder="Search wallpapers...">
-
-<select id="filter">
-  <option value="all">All</option>
-  <option value="naruto">Naruto</option>
-  <option value="dragon ball">Dragon Ball</option>
-  <option value="one piece">One Piece</option>
-  <option value="anime">Anime</option>
-  <option value="bmw">BMW</option>
-  <option value="ferrari">Ferrari</option>
-  <option value="lamborghini">Lamborghini</option>
-  <option value="nature">Nature</option>
-  <option value="mountains">Mountains</option>
-  <option value="forest">Forest</option>
-  <option value="space">Space</option>
-</select>
-
-</div>
-
-<div id="gallery"></div>
-
-<div id="popup">
-  <span class="close" onclick="closePopup()">✖</span>
-  <img id="popupImg">
-</div>
-
 <script>
 
-function generateWallpapers(){
+const API_KEY = "PASTE_YOUR_PIXABAY_API_KEY";
 
-  let search =
-  document.getElementById("search").value.trim();
+async function generateWallpapers() {
 
-  let filter =
-  document.getElementById("filter").value;
+  document.getElementById("loader").style.display = "block";
+
+  let search = document
+    .getElementById("search")
+    .value
+    .trim();
+
+  let filter = document
+    .getElementById("filter")
+    .value;
 
   let query = search || filter;
 
-  if(query === "all" || query === ""){
-    query = "wallpaper";
+  if (query === "" || query === "all") {
+    query = "4k wallpaper";
   }
 
-  let gallery =
-  document.getElementById("gallery");
+  let gallery = document.getElementById("gallery");
 
   gallery.innerHTML = "";
 
-  for(let i=1;i<=50;i++){
+  try {
 
-    let imageUrl =
-    `https://picsum.photos/400/700?random=${Math.floor(Math.random()*100000)}`;
+    let response = await fetch(
+      `https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo&orientation=vertical&per_page=50&safesearch=true`
+    );
 
-    gallery.innerHTML += `
+    let data = await response.json();
 
-    <div class="card">
+    data.hits.forEach(img => {
 
-      <img
-      src="${imageUrl}"
-      onclick="openPopup('${imageUrl}')">
+      let imageUrl = img.largeImageURL;
 
-      <div class="buttons">
+      gallery.innerHTML += `
 
-        <button class="btn"
-        onclick="downloadWallpaper('${imageUrl}')">
-        Download
-        </button>
+      <div class="card">
 
-        <button class="btn"
-        onclick="shareWallpaper('${imageUrl}')">
-        Share
-        </button>
+        <img
+          src="${imageUrl}"
+          onclick="openPopup('${imageUrl}')">
+
+        <div class="buttons">
+
+          <button class="btn"
+            onclick="downloadWallpaper('${imageUrl}')">
+            Download
+          </button>
+
+          <button class="btn"
+            onclick="shareWallpaper('${imageUrl}')">
+            Share
+          </button>
+
+        </div>
 
       </div>
-
-    </div>
-
-    `;
-  }
-}
-
-function openPopup(url){
-
-  document.getElementById("popup").style.display="flex";
-
-  document.getElementById("popupImg").src=url;
-}
-
-function closePopup(){
-
-  document.getElementById("popup").style.display="none";
-}
-
-function shareWallpaper(url){
-
-  if(navigator.share){
-
-    navigator.share({
-      title:"Wallpaper",
-      url:url
+      `;
     });
 
-  }else{
+  } catch (error) {
+
+    gallery.innerHTML =
+      "<p style='color:white'>Failed to load wallpapers</p>";
+  }
+
+  document.getElementById("loader").style.display = "none";
+}
+
+function openPopup(url) {
+
+  document.getElementById("popup").style.display = "flex";
+
+  document.getElementById("popupImg").src = url;
+}
+
+function closePopup() {
+
+  document.getElementById("popup").style.display = "none";
+}
+
+function shareWallpaper(url) {
+
+  if (navigator.share) {
+
+    navigator.share({
+      title: "Wallpaper",
+      url: url
+    });
+
+  } else {
 
     alert("Sharing not supported");
   }
 }
 
-async function downloadWallpaper(url){
+async function downloadWallpaper(url) {
 
   const response = await fetch(url);
 
   const blob = await response.blob();
 
-  const blobUrl = URL.createObjectURL(blob);
+  const blobUrl = window.URL.createObjectURL(blob);
 
   const a = document.createElement("a");
 
@@ -238,20 +117,17 @@ async function downloadWallpaper(url){
 
   a.click();
 
-  document.body.removeChild(a);
+  a.remove();
 }
 
 document
-.getElementById("search")
-.addEventListener("keyup", generateWallpapers);
+  .getElementById("search")
+  .addEventListener("keyup", generateWallpapers);
 
 document
-.getElementById("filter")
-.addEventListener("change", generateWallpapers);
+  .getElementById("filter")
+  .addEventListener("change", generateWallpapers);
 
 generateWallpapers();
 
 </script>
-
-</body>
-</html>
