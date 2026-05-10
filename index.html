@@ -154,7 +154,121 @@ placeholder="Search wallpapers...">
 
 <script>
 
-const_API_KEY = "55804332-c39398bb2e0b02b325f1b6ce6";
+const_API_KEY = <script>
+
+function loadWallpapers(){
+
+let search =
+document.getElementById("search").value.trim();
+
+let filter =
+document.getElementById("filter").value;
+
+let query = search || filter;
+
+if(query === "" || query === "all"){
+query = "wallpaper";
+}
+
+let gallery =
+document.getElementById("gallery");
+
+gallery.innerHTML = "";
+
+for(let i=1;i<=60;i++){
+
+let random = Math.floor(Math.random()*999999);
+
+let imageUrl =
+`https://loremflickr.com/720/1280/${query}?lock=${random}`;
+
+gallery.innerHTML += `
+
+<div class="card">
+
+<img
+src="${imageUrl}"
+onclick="openPopup('${imageUrl}')">
+
+<div class="buttons">
+
+<button class="btn"
+onclick="downloadWallpaper('${imageUrl}')">
+Download
+</button>
+
+<button class="btn"
+onclick="shareWallpaper('${imageUrl}')">
+Share
+</button>
+
+</div>
+
+</div>
+
+`;
+}
+}
+
+function openPopup(url){
+
+document.getElementById("popup").style.display="flex";
+
+document.getElementById("popupImg").src=url;
+}
+
+function closePopup(){
+
+document.getElementById("popup").style.display="none";
+}
+
+function shareWallpaper(url){
+
+if(navigator.share){
+
+navigator.share({
+title:"Wallpaper",
+url:url
+});
+
+}else{
+
+alert("Sharing not supported");
+}
+}
+
+async function downloadWallpaper(url){
+
+const response = await fetch(url);
+
+const blob = await response.blob();
+
+const blobUrl = URL.createObjectURL(blob);
+
+const a = document.createElement("a");
+
+a.href = blobUrl;
+
+a.download = "wallpaper.jpg";
+
+document.body.appendChild(a);
+
+a.click();
+
+document.body.removeChild(a);
+}
+
+document
+.getElementById("search")
+.addEventListener("keyup", loadWallpapers);
+
+document
+.getElementById("filter")
+.addEventListener("change", loadWallpapers);
+
+loadWallpapers();
+
+</script>
 
 let currentPage = 1;
 let loading = false;
