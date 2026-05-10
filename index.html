@@ -1,15 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🔥 AI Wallpapers</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#000;
+color:white;
+text-align:center;
+}
+
+h1{
+padding:20px;
+font-size:38px;
+}
+
+.topbar{
+display:flex;
+justify-content:center;
+gap:10px;
+flex-wrap:wrap;
+padding:10px;
+}
+
+input,select{
+padding:12px;
+border:none;
+border-radius:10px;
+background:#1c1c1c;
+color:white;
+font-size:16px;
+}
+
+#gallery{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
+padding:15px;
+}
+
+.card{
+background:#111;
+border-radius:15px;
+overflow:hidden;
+box-shadow:0 0 10px rgba(255,255,255,0.1);
+transition:0.3s;
+}
+
+.card:hover{
+transform:scale(1.03);
+}
+
+.card img{
+width:100%;
+height:320px;
+object-fit:cover;
+cursor:pointer;
+}
+
+.buttons{
+display:flex;
+gap:8px;
+padding:10px;
+}
+
+.btn{
+flex:1;
+padding:10px;
+border:none;
+border-radius:10px;
+background:#ff3b3b;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+.btn:hover{
+background:red;
+}
+
+#popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.95);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+
+#popup img{
+max-width:90%;
+max-height:90%;
+border-radius:20px;
+}
+
+.close{
+position:absolute;
+top:20px;
+right:25px;
+font-size:35px;
+cursor:pointer;
+color:white;
+}
+
+#loader{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:1000;
+font-size:25px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="loader">
+Loading Wallpapers...
+</div>
+
+<h1>🔥 AI Wallpapers</h1>
+
+<div class="topbar">
+
+<input
+type="text"
+id="search"
+placeholder="Search wallpapers...">
+
+<select id="filter">
+
+<option value="all">All</option>
+
+<option value="nature">Nature</option>
+
+<option value="mountains">Mountains</option>
+
+<option value="forest">Forest</option>
+
+<option value="sky">Sky</option>
+
+<option value="space">Space</option>
+
+<option value="anime">Anime</option>
+
+<option value="naruto">Naruto</option>
+
+<option value="dragon ball">Dragon Ball</option>
+
+<option value="one piece">One Piece</option>
+
+<option value="car">Cars</option>
+
+<option value="bmw">BMW</option>
+
+<option value="ferrari">Ferrari</option>
+
+<option value="lamborghini">Lamborghini</option>
+
+<option value="gaming">Gaming</option>
+
+<option value="cyberpunk">Cyberpunk</option>
+
+</select>
+
+</div>
+
+<div id="gallery"></div>
+
+<div id="popup">
+
+<span
+class="close"
+onclick="closePopup()">
+✖
+</span>
+
+<img id="popupImg">
+
+</div>
+
 <script>
 
 function loadWallpapers(){
 
-let search =
-document.getElementById("search")
-.value
-.trim();
+let searchInput =
+document.getElementById("search");
 
-let filter =
-document.getElementById("filter")
-.value;
+let filterInput =
+document.getElementById("filter");
+
+let search = "";
+
+let filter = "all";
+
+if(searchInput){
+search = searchInput.value.trim();
+}
+
+if(filterInput){
+filter = filterInput.value;
+}
 
 let query = search || filter;
 
@@ -28,7 +245,7 @@ let random =
 Math.floor(Math.random()*999999);
 
 let imageUrl =
-`https://source.unsplash.com/720x1280/?${query}&sig=${random}`;
+`https://picsum.photos/seed/${query+random}/720/1280`;
 
 gallery.innerHTML += `
 
@@ -36,6 +253,7 @@ gallery.innerHTML += `
 
 <img
 src="${imageUrl}"
+loading="lazy"
 onclick="openPopup('${imageUrl}')">
 
 <div class="buttons">
@@ -58,21 +276,24 @@ Share
 
 `;
 }
+
+document.getElementById("loader")
+.style.display = "none";
 }
 
 function openPopup(url){
 
 document.getElementById("popup")
-.style.display="flex";
+.style.display = "flex";
 
 document.getElementById("popupImg")
-.src=url;
+.src = url;
 }
 
 function closePopup(){
 
 document.getElementById("popup")
-.style.display="none";
+.style.display = "none";
 }
 
 function shareWallpaper(url){
@@ -91,6 +312,8 @@ alert("Sharing not supported");
 }
 
 async function downloadWallpaper(url){
+
+try{
 
 const response = await fetch(url);
 
@@ -111,6 +334,11 @@ document.body.appendChild(a);
 a.click();
 
 document.body.removeChild(a);
+
+}catch(error){
+
+alert("Download failed");
+}
 }
 
 document
@@ -130,3 +358,6 @@ loadWallpapers
 loadWallpapers();
 
 </script>
+
+</body>
+</html>
