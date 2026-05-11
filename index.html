@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>🔥 AI Wallpapers</title>
+<title>🔥 AI Wallpaper Generator</title>
 
 <style>
 
@@ -22,6 +22,7 @@ background:
 linear-gradient(to bottom,#050505,#111);
 color:white;
 text-align:center;
+overflow-x:hidden;
 }
 
 h1{
@@ -38,18 +39,39 @@ padding:10px;
 }
 
 input,select{
-padding:12px;
+padding:14px;
 border:none;
-border-radius:10px;
+border-radius:12px;
 background:#1c1c1c;
 color:white;
 font-size:16px;
 }
 
+input{
+width:260px;
+}
+
+button{
+padding:14px 18px;
+border:none;
+border-radius:12px;
+background:
+linear-gradient(45deg,#ff0080,#ff3b3b);
+color:white;
+font-weight:bold;
+cursor:pointer;
+box-shadow:0 0 15px rgba(255,0,128,0.5);
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
 #gallery{
 display:grid;
 grid-template-columns:
-repeat(auto-fit,minmax(180px,1fr));
+repeat(auto-fit,minmax(220px,1fr));
 gap:15px;
 padding:15px;
 }
@@ -66,12 +88,11 @@ transition:0.3s;
 
 .card:hover{
 transform:translateY(-5px);
-box-shadow:0 0 20px rgba(255,0,128,0.4);
 }
 
 .card img{
 width:100%;
-height:320px;
+height:350px;
 object-fit:cover;
 cursor:pointer;
 }
@@ -84,20 +105,6 @@ padding:10px;
 
 .btn{
 flex:1;
-padding:10px;
-border:none;
-border-radius:12px;
-background:linear-gradient(45deg,#ff0080,#ff3b3b);
-color:white;
-font-weight:bold;
-cursor:pointer;
-box-shadow:0 0 15px rgba(255,0,128,0.5);
-transition:0.3s;
-}
-
-.btn:hover{
-transform:scale(1.05);
-box-shadow:0 0 20px rgba(255,0,128,1);
 }
 
 #popup{
@@ -129,17 +136,9 @@ color:white;
 }
 
 #loader{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:black;
-display:flex;
-justify-content:center;
-align-items:center;
-z-index:1000;
-font-size:25px;
+display:none;
+font-size:24px;
+padding:20px;
 }
 
 </style>
@@ -148,55 +147,39 @@ font-size:25px;
 
 <body>
 
-<div id="loader">
-Loading Wallpapers...
-</div>
-
-<h1>🔥 AI Wallpapers</h1>
+<h1>🔥 AI Wallpaper Generator</h1>
 
 <div class="topbar">
 
 <input
 type="text"
-id="search"
-placeholder="Search wallpapers...">
+id="prompt"
+placeholder="Generate AI wallpaper...">
 
-<select id="filter">
+<select id="device">
 
-<option value="all">All</option>
+<option value="mobile">
+📱 Mobile Wallpapers
+</option>
 
-<option value="nature">Nature</option>
+<option value="desktop">
+💻 Desktop Wallpapers
+</option>
 
-<option value="mountains">Mountains</option>
-
-<option value="forest">Forest</option>
-
-<option value="sky">Sky</option>
-
-<option value="space">Space</option>
-
-<option value="anime">Anime</option>
-
-<option value="naruto">Naruto</option>
-
-<option value="dragon ball">Dragon Ball</option>
-
-<option value="one piece">One Piece</option>
-
-<option value="car">Cars</option>
-
-<option value="bmw">BMW</option>
-
-<option value="ferrari">Ferrari</option>
-
-<option value="lamborghini">Lamborghini</option>
-
-<option value="gaming">Gaming</option>
-
-<option value="cyberpunk">Cyberpunk</option>
+<option value="4k">
+🖥️ 4K Wallpapers
+</option>
 
 </select>
 
+<button onclick="generateAI()">
+Generate
+</button>
+
+</div>
+
+<div id="loader">
+Generating AI Wallpapers...
 </div>
 
 <div id="gallery"></div>
@@ -215,55 +198,48 @@ onclick="closePopup()">
 
 <script>
 
-let page = 1;
+async function generateAI(){
 
-let loading = false;
+let prompt =
+document.getElementById("prompt")
+.value
+.trim();
 
-async function loadWallpapers(reset=false){
-
-if(loading) return;
-
-loading = true;
-
-let searchInput =
-document.getElementById("search");
-
-let filterInput =
-document.getElementById("filter");
-
-let search = "";
-
-let filter = "all";
-
-if(searchInput){
-search = searchInput.value.trim();
+if(prompt === ""){
+prompt = "cyberpunk";
 }
 
-if(filterInput){
-filter = filterInput.value;
+let device =
+document.getElementById("device")
+.value;
+
+let width = 720;
+let height = 1280;
+
+if(device === "desktop"){
+
+width = 1920;
+height = 1080;
 }
 
-let query = search || filter;
+if(device === "4k"){
 
-if(query === "" || query === "all"){
-query = "wallpaper";
+width = 3840;
+height = 2160;
 }
 
 let gallery =
 document.getElementById("gallery");
 
-if(reset){
-page = 1;
 gallery.innerHTML = "";
-}
 
-for(let i=1;i<=30;i++){
+document.getElementById("loader")
+.style.display = "block";
 
-let random =
-Math.floor(Math.random()*999999);
+for(let i=1;i<=12;i++){
 
 let imageUrl =
-`https://picsum.photos/seed/${query+random}/720/1280`;
+`https://image.pollinations.ai/prompt/${encodeURIComponent(prompt + " ultra hd wallpaper " + i)}?width=${width}&height=${height}`;
 
 gallery.innerHTML += `
 
@@ -288,12 +264,6 @@ onclick="shareWallpaper('${imageUrl}')">
 Share
 </button>
 
-<button
-class="btn"
-onclick="saveFavorite('${imageUrl}')">
-❤️
-</button>
-
 </div>
 
 </div>
@@ -301,12 +271,12 @@ onclick="saveFavorite('${imageUrl}')">
 `;
 }
 
-page++;
+setTimeout(()=>{
 
 document.getElementById("loader")
 .style.display = "none";
 
-loading = false;
+},2000);
 }
 
 function openPopup(url){
@@ -329,7 +299,7 @@ function shareWallpaper(url){
 if(navigator.share){
 
 navigator.share({
-title:"Wallpaper",
+title:"AI Wallpaper",
 url:url
 });
 
@@ -337,21 +307,6 @@ url:url
 
 alert("Sharing not supported");
 }
-}
-
-function saveFavorite(url){
-
-let favs =
-JSON.parse(localStorage.getItem("favs")) || [];
-
-favs.push(url);
-
-localStorage.setItem(
-"favs",
-JSON.stringify(favs)
-);
-
-alert("Saved ❤️");
 }
 
 async function downloadWallpaper(url){
@@ -370,7 +325,7 @@ document.createElement("a");
 
 a.href = blobUrl;
 
-a.download = "wallpaper.jpg";
+a.download = "ai-wallpaper.jpg";
 
 document.body.appendChild(a);
 
@@ -384,31 +339,7 @@ alert("Download failed");
 }
 }
 
-window.addEventListener("scroll",()=>{
-
-if(
-window.innerHeight + window.scrollY
->= document.body.offsetHeight - 1000
-){
-loadWallpapers();
-}
-});
-
-document
-.getElementById("search")
-.addEventListener(
-"keyup",
-()=>loadWallpapers(true)
-);
-
-document
-.getElementById("filter")
-.addEventListener(
-"change",
-()=>loadWallpapers(true)
-);
-
-loadWallpapers();
+generateAI();
 
 </script>
 
