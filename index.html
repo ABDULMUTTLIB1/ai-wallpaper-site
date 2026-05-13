@@ -4,6 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
@@ -173,7 +174,23 @@ type="text"
 id="search"
 placeholder="Search wallpapers...">
 
-<button onclick="searchWallpapers()">
+<select id="device">
+
+<option value="vertical">
+📱 Mobile
+</option>
+
+<option value="horizontal">
+💻 Desktop
+</option>
+
+<option value="all">
+🖥️ Computer / 4K
+</option>
+
+</select>
+
+<button onclick="searchWallpapers(true)">
 Search
 </button>
 
@@ -204,7 +221,13 @@ const API_KEY =
 
 let page = 1;
 
-async function searchWallpapers(reset=true){
+let loading = false;
+
+async function searchWallpapers(reset=false){
+
+if(loading) return;
+
+loading = true;
 
 let query =
 document.getElementById("search")
@@ -224,11 +247,16 @@ document.getElementById("gallery")
 
 }
 
+let orientation =
+document.getElementById("device")
+.value;
+
 document.getElementById("loader")
-.innerHTML = "Loading Wallpapers...";
+.innerHTML =
+"Loading Wallpapers...";
 
 let url =
-`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo&orientation=vertical&per_page=20&page=${page}`;
+`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo&orientation=${orientation}&per_page=30&page=${page}`;
 
 let response =
 await fetch(url);
@@ -274,9 +302,11 @@ Share
 
 document.getElementById("loader")
 .innerHTML =
-"Scroll for more wallpapers";
+"Scroll down for more wallpapers";
 
 page++;
+
+loading = false;
 
 }
 
@@ -299,6 +329,8 @@ document.getElementById("popup")
 
 async function downloadWallpaper(url){
 
+try{
+
 const response =
 await fetch(url);
 
@@ -320,6 +352,14 @@ document.body.appendChild(a);
 a.click();
 
 document.body.removeChild(a);
+
+URL.revokeObjectURL(blobUrl);
+
+}catch(error){
+
+alert("Download failed");
+
+}
 
 }
 
