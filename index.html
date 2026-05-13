@@ -176,16 +176,16 @@ placeholder="Search wallpapers...">
 
 <select id="device">
 
+<option value="">
+🖥️ All Wallpapers
+</option>
+
 <option value="vertical">
 📱 Mobile
 </option>
 
 <option value="horizontal">
 💻 Desktop
-</option>
-
-<option value="all">
-🖥️ Computer / 4K
 </option>
 
 </select>
@@ -251,12 +251,21 @@ let orientation =
 document.getElementById("device")
 .value;
 
+let orientationQuery = "";
+
+if(orientation !== ""){
+
+orientationQuery =
+`&orientation=${orientation}`;
+
+}
+
 document.getElementById("loader")
 .innerHTML =
 "Loading Wallpapers...";
 
 let url =
-`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo&orientation=${orientation}&per_page=8&page=${page}`;
+`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo${orientationQuery}&per_page=20&page=${page}`;
 
 let response =
 await fetch(url);
@@ -388,7 +397,7 @@ window.addEventListener("scroll",()=>{
 if(
 window.innerHeight +
 window.scrollY >=
-document.body.offsetHeight - 300
+document.body.offsetHeight - 1000
 ){
 
 searchWallpapers(false);
