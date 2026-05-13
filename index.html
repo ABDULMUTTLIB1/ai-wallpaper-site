@@ -155,7 +155,7 @@ cursor:pointer;
 
 text-align:center;
 padding:20px;
-font-size:22px;
+font-size:20px;
 
 }
 
@@ -256,7 +256,7 @@ document.getElementById("loader")
 "Loading Wallpapers...";
 
 let url =
-`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo&orientation=${orientation}&per_page=30&page=${page}`;
+`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo&orientation=${orientation}&per_page=12&page=${page}`;
 
 let response =
 await fetch(url);
@@ -274,8 +274,9 @@ gallery.innerHTML += `
 <div class="card">
 
 <img
-src="${photo.largeImageURL}"
+src="${photo.webformatURL}"
 loading="lazy"
+decoding="async"
 onclick="openPopup('${photo.largeImageURL}')">
 
 <div class="buttons">
