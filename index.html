@@ -7,7 +7,7 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>🔥 AI Wallpaper Generator</title>
+<title>🔥 AI Wallpapers</title>
 
 <style>
 
@@ -164,33 +164,17 @@ font-size:22px;
 
 <body>
 
-<h1>🔥 AI Wallpaper Generator</h1>
+<h1>🔥 AI Wallpapers</h1>
 
 <div class="topbar">
 
 <input
 type="text"
-id="prompt"
+id="search"
 placeholder="Search wallpapers...">
 
-<select id="device">
-
-<option value="mobile">
-📱 Mobile
-</option>
-
-<option value="desktop">
-💻 Desktop
-</option>
-
-<option value="4k">
-🖥️ 4K
-</option>
-
-</select>
-
-<button onclick="newSearch()">
-Generate
+<button onclick="searchWallpapers()">
+Search
 </button>
 
 </div>
@@ -215,82 +199,68 @@ onclick="closePopup()">
 
 <script>
 
-let loading = false;
+const API_KEY =
+"55804332-c39398bb2e0b02b325f1b6ce6";
 
-function getSize(){
+let page = 1;
 
-let device =
-document.getElementById("device").value;
+async function searchWallpapers(reset=true){
 
-let width = 720;
-let height = 1280;
+let query =
+document.getElementById("search")
+.value
+.trim();
 
-if(device === "desktop"){
+if(query === ""){
+query = "wallpaper";
+}
 
-width = 1920;
-height = 1080;
+if(reset){
+
+page = 1;
+
+document.getElementById("gallery")
+.innerHTML = "";
 
 }
 
-if(device === "4k"){
+document.getElementById("loader")
+.innerHTML = "Loading Wallpapers...";
 
-width = 3840;
-height = 2160;
+let url =
+`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo&orientation=vertical&per_page=20&page=${page}`;
 
-}
+let response =
+await fetch(url);
 
-return {width,height};
-
-}
-
-async function generateWallpapers(){
-
-if(loading) return;
-
-loading = true;
+let data =
+await response.json();
 
 let gallery =
 document.getElementById("gallery");
 
-let prompt =
-document.getElementById("prompt")
-.value
-.trim();
-
-if(prompt === ""){
-prompt = "nature";
-}
-
-let size = getSize();
-
-for(let i=0;i<12;i++){
-
-let seed =
-Math.floor(Math.random()*999999);
-
-let imageUrl =
-`https://picsum.photos/seed/${prompt+seed}/${size.width}/${size.height}`;
+data.hits.forEach(photo => {
 
 gallery.innerHTML += `
 
 <div class="card">
 
 <img
-src="${imageUrl}"
+src="${photo.largeImageURL}"
 loading="lazy"
-onclick="openPopup('${imageUrl}')">
+onclick="openPopup('${photo.largeImageURL}')">
 
 <div class="buttons">
 
 <button
 class="btn"
-onclick="downloadWallpaper('${imageUrl}')">
+onclick="downloadWallpaper('${photo.largeImageURL}')">
 Download
 </button>
 
 <button
 class="btn"
-onclick="shareWallpaper('${imageUrl}')">
+onclick="shareWallpaper('${photo.largeImageURL}')">
 Share
 </button>
 
@@ -300,22 +270,13 @@ Share
 
 `;
 
-}
-
-loading = false;
+});
 
 document.getElementById("loader")
 .innerHTML =
-"Scroll down for more wallpapers";
+"Scroll for more wallpapers";
 
-}
-
-function newSearch(){
-
-document.getElementById("gallery")
-.innerHTML = "";
-
-generateWallpapers();
+page++;
 
 }
 
@@ -337,8 +298,6 @@ document.getElementById("popup")
 }
 
 async function downloadWallpaper(url){
-
-try{
 
 const response =
 await fetch(url);
@@ -362,14 +321,6 @@ a.click();
 
 document.body.removeChild(a);
 
-URL.revokeObjectURL(blobUrl);
-
-}catch(error){
-
-alert("Download failed");
-
-}
-
 }
 
 function shareWallpaper(url){
@@ -391,21 +342,21 @@ alert("Sharing not supported");
 
 }
 
-window.onscroll = function(){
+window.addEventListener("scroll",()=>{
 
 if(
 window.innerHeight +
 window.scrollY >=
-document.body.offsetHeight - 200
+document.body.offsetHeight - 300
 ){
 
-generateWallpapers();
+searchWallpapers(false);
 
 }
 
-};
+});
 
-generateWallpapers();
+searchWallpapers();
 
 </script>
 
