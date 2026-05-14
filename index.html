@@ -95,8 +95,8 @@ border:1px solid #333;
 width:100%;
 height:350px;
 object-fit:cover;
-cursor:pointer;
 display:block;
+cursor:pointer;
 
 }
 
@@ -220,7 +220,6 @@ const API_KEY =
 "55804332-c39398bb2e0b02b325f1b6ce6";
 
 let page = 1;
-
 let loading = false;
 
 async function searchWallpapers(reset=false){
@@ -264,8 +263,10 @@ document.getElementById("loader")
 .innerHTML =
 "Loading Wallpapers...";
 
+try{
+
 let url =
-`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo${orientationQuery}&per_page=12&page=${page}`;
+`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo${orientationQuery}&per_page=16&page=${page}`;
 
 let response =
 await fetch(url);
@@ -276,6 +277,17 @@ await response.json();
 let gallery =
 document.getElementById("gallery");
 
+if(data.hits.length === 0){
+
+document.getElementById("loader")
+.innerHTML =
+"No more wallpapers";
+
+loading = false;
+return;
+
+}
+
 data.hits.forEach(photo => {
 
 gallery.innerHTML += `
@@ -283,7 +295,7 @@ gallery.innerHTML += `
 <div class="card">
 
 <img
-src="${photo.largeImageURL}"
+src="${photo.webformatURL}"
 loading="lazy"
 onclick="openPopup('${photo.largeImageURL}')">
 
@@ -315,6 +327,14 @@ document.getElementById("loader")
 
 page++;
 
+}catch(error){
+
+document.getElementById("loader")
+.innerHTML =
+"API limit reached. Try later.";
+
+}
+
 loading = false;
 
 }
@@ -338,7 +358,14 @@ document.getElementById("popup")
 
 function downloadWallpaper(url){
 
-window.open(url,"_blank");
+let a =
+document.createElement("a");
+
+a.href = url;
+
+a.target = "_blank";
+
+a.click();
 
 }
 
@@ -366,7 +393,7 @@ window.addEventListener("scroll",()=>{
 if(
 window.innerHeight +
 window.scrollY >=
-document.body.offsetHeight - 800
+document.body.offsetHeight - 500
 ){
 
 searchWallpapers(false);
