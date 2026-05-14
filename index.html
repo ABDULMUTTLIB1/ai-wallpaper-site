@@ -173,6 +173,7 @@ font-size:20px;
 type="text"
 id="search"
 placeholder="Search wallpapers...">
+
 <select id="device">
 
 <option value="">
@@ -336,39 +337,9 @@ document.getElementById("popup")
 
 }
 
-async function downloadWallpaper(url){
+function downloadWallpaper(url){
 
-try{
-
-const response =
-await fetch(url);
-
-const blob =
-await response.blob();
-
-const blobUrl =
-URL.createObjectURL(blob);
-
-const a =
-document.createElement("a");
-
-a.href = blobUrl;
-
-a.download = "wallpaper.jpg";
-
-document.body.appendChild(a);
-
-a.click();
-
-document.body.removeChild(a);
-
-URL.revokeObjectURL(blobUrl);
-
-}catch(error){
-
-alert("Download failed");
-
-}
+window.open(url,"_blank");
 
 }
 
