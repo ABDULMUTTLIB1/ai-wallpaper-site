@@ -4,7 +4,6 @@
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
@@ -265,7 +264,7 @@ document.getElementById("loader")
 "Loading Wallpapers...";
 
 let url =
-`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo${orientationQuery}&per_page=20&page=${page}`;
+`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo${orientationQuery}&per_page=15&page=${page}`;
 
 let response =
 await fetch(url);
@@ -283,22 +282,22 @@ gallery.innerHTML += `
 <div class="card">
 
 <img
-src="${photo.previewURL}"
+src="${photo.webformatURL}"
 loading="lazy"
 decoding="async"
-onclick="openPopup('${photo.largeImageURL}')">
+onclick="openPopup('${photo.webformatURL}')">
 
 <div class="buttons">
 
 <button
 class="btn"
-onclick="downloadWallpaper('${photo.largeImageURL}')">
+onclick="downloadWallpaper('${photo.webformatURL}')">
 Download
 </button>
 
 <button
 class="btn"
-onclick="shareWallpaper('${photo.largeImageURL}')">
+onclick="shareWallpaper('${photo.webformatURL}')">
 Share
 </button>
 
