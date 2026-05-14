@@ -283,7 +283,7 @@ document.getElementById("loader")
 try{
 
 let url =
-`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo${orientationQuery}&per_page=12&page=${page}&safesearch=true`;
+`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo${orientationQuery}&per_page=8&page=${page}&safesearch=true`;
 
 let response =
 await fetch(url);
@@ -435,7 +435,7 @@ window.addEventListener("scroll",()=>{
 if(
 window.innerHeight +
 window.scrollY >=
-document.body.offsetHeight - 700
+document.body.offsetHeight - 100
 ){
 
 searchWallpapers(false);
