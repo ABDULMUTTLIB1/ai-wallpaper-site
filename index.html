@@ -96,6 +96,7 @@ width:100%;
 height:350px;
 object-fit:cover;
 cursor:pointer;
+display:block;
 
 }
 
@@ -264,7 +265,7 @@ document.getElementById("loader")
 "Loading Wallpapers...";
 
 let url =
-`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo${orientationQuery}&per_page=15&page=${page}`;
+`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo${orientationQuery}&per_page=12&page=${page}`;
 
 let response =
 await fetch(url);
@@ -282,22 +283,21 @@ gallery.innerHTML += `
 <div class="card">
 
 <img
-src="${photo.webformatURL}"
+src="${photo.largeImageURL}"
 loading="lazy"
-decoding="async"
-onclick="openPopup('${photo.webformatURL}')">
+onclick="openPopup('${photo.largeImageURL}')">
 
 <div class="buttons">
 
 <button
 class="btn"
-onclick="downloadWallpaper('${photo.webformatURL}')">
+onclick="downloadWallpaper('${photo.largeImageURL}')">
 Download
 </button>
 
 <button
 class="btn"
-onclick="shareWallpaper('${photo.webformatURL}')">
+onclick="shareWallpaper('${photo.largeImageURL}')">
 Share
 </button>
 
@@ -366,7 +366,7 @@ window.addEventListener("scroll",()=>{
 if(
 window.innerHeight +
 window.scrollY >=
-document.body.offsetHeight - 1000
+document.body.offsetHeight - 800
 ){
 
 searchWallpapers(false);
