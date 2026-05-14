@@ -116,22 +116,33 @@ left:0;
 width:100%;
 height:100%;
 
-background:rgba(0,0,0,0.95);
+background:rgba(0,0,0,0.97);
 
 display:none;
 
+flex-direction:column;
 justify-content:center;
 align-items:center;
 
 z-index:999;
+
+padding:20px;
 
 }
 
 #popup img{
 
 max-width:95%;
-max-height:95%;
+max-height:75%;
 border-radius:20px;
+
+}
+
+.popupButtons{
+
+display:flex;
+gap:12px;
+margin-top:20px;
 
 }
 
@@ -207,6 +218,18 @@ onclick="closePopup()">
 
 <img id="popupImg">
 
+<div class="popupButtons">
+
+<button id="popupDownload">
+Download
+</button>
+
+<button id="popupShare">
+Share
+</button>
+
+</div>
+
 </div>
 
 <script>
@@ -260,7 +283,7 @@ document.getElementById("loader")
 try{
 
 let url =
-`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo${orientationQuery}&per_page=16&page=${page}&safesearch=true`;
+`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo${orientationQuery}&per_page=12&page=${page}&safesearch=true`;
 
 let response =
 await fetch(url);
@@ -268,10 +291,7 @@ await fetch(url);
 let data =
 await response.json();
 
-let gallery =
-document.getElementById("gallery");
-
-if(!data.hits || data.hits.length === 0){
+if(data.totalHits === 0){
 
 document.getElementById("loader")
 .innerHTML =
@@ -282,6 +302,9 @@ return;
 
 }
 
+let gallery =
+document.getElementById("gallery");
+
 data.hits.forEach(photo => {
 
 gallery.innerHTML += `
@@ -290,24 +313,38 @@ gallery.innerHTML += `
 
 <img
 src="${photo.webformatURL}"
-alt="wallpaper"
 loading="lazy"
 
-onerror="this.src='${photo.previewURL}'"
+onclick="
+openPopup(
+'${photo.largeImageURL}',
+'${photo.pageURL}'
+)
+"
 
-onclick="openPopup('${photo.largeImageURL}')">
+onerror="
+this.src='${photo.previewURL}'
+">
 
 <div class="buttons">
 
 <button
 class="btn"
-onclick="downloadWallpaper('${photo.largeImageURL}')">
+onclick="
+downloadWallpaper(
+'${photo.largeImageURL}'
+)
+">
 Download
 </button>
 
 <button
 class="btn"
-onclick="shareWallpaper('${photo.pageURL}')">
+onclick="
+shareWallpaper(
+'${photo.pageURL}'
+)
+">
 Share
 </button>
 
@@ -329,7 +366,7 @@ page++;
 
 document.getElementById("loader")
 .innerHTML =
-"API limit reached. Try again later.";
+"Rate limit reached. Wait a little.";
 
 }
 
@@ -337,13 +374,27 @@ loading = false;
 
 }
 
-function openPopup(url){
+function openPopup(imageUrl,pageUrl){
 
 document.getElementById("popup")
 .style.display = "flex";
 
 document.getElementById("popupImg")
-.src = url;
+.src = imageUrl;
+
+document.getElementById("popupDownload")
+.onclick = function(){
+
+downloadWallpaper(imageUrl);
+
+};
+
+document.getElementById("popupShare")
+.onclick = function(){
+
+shareWallpaper(pageUrl);
+
+};
 
 }
 
@@ -384,7 +435,7 @@ window.addEventListener("scroll",()=>{
 if(
 window.innerHeight +
 window.scrollY >=
-document.body.offsetHeight - 500
+document.body.offsetHeight - 700
 ){
 
 searchWallpapers(false);
