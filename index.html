@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>🔥 AI Wallpapers</title>
 
@@ -58,10 +56,7 @@ button{
 padding:14px 18px;
 border:none;
 border-radius:12px;
-
-background:
-linear-gradient(45deg,#ff0080,#ff3b3b);
-
+background:linear-gradient(45deg,#ff0080,#ff3b3b);
 color:white;
 font-weight:bold;
 cursor:pointer;
@@ -76,7 +71,6 @@ grid-template-columns:
 repeat(auto-fit,minmax(220px,1fr));
 
 gap:15px;
-
 padding:15px;
 
 }
@@ -97,6 +91,7 @@ height:350px;
 object-fit:cover;
 display:block;
 cursor:pointer;
+background:#111;
 
 }
 
@@ -134,8 +129,8 @@ z-index:999;
 
 #popup img{
 
-max-width:90%;
-max-height:90%;
+max-width:95%;
+max-height:95%;
 border-radius:20px;
 
 }
@@ -148,6 +143,7 @@ right:25px;
 
 font-size:35px;
 cursor:pointer;
+color:white;
 
 }
 
@@ -204,8 +200,7 @@ Loading Wallpapers...
 
 <div id="popup">
 
-<span
-class="close"
+<span class="close"
 onclick="closePopup()">
 ✖
 </span>
@@ -230,8 +225,7 @@ loading = true;
 
 let query =
 document.getElementById("search")
-.value
-.trim();
+.value.trim();
 
 if(query === ""){
 query = "wallpaper";
@@ -266,7 +260,7 @@ document.getElementById("loader")
 try{
 
 let url =
-`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo${orientationQuery}&per_page=16&page=${page}`;
+`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo${orientationQuery}&per_page=16&page=${page}&safesearch=true`;
 
 let response =
 await fetch(url);
@@ -277,11 +271,11 @@ await response.json();
 let gallery =
 document.getElementById("gallery");
 
-if(data.hits.length === 0){
+if(!data.hits || data.hits.length === 0){
 
 document.getElementById("loader")
 .innerHTML =
-"No more wallpapers";
+"No wallpapers found";
 
 loading = false;
 return;
@@ -296,7 +290,11 @@ gallery.innerHTML += `
 
 <img
 src="${photo.webformatURL}"
+alt="wallpaper"
 loading="lazy"
+
+onerror="this.src='${photo.previewURL}'"
+
 onclick="openPopup('${photo.largeImageURL}')">
 
 <div class="buttons">
@@ -309,7 +307,7 @@ Download
 
 <button
 class="btn"
-onclick="shareWallpaper('${photo.largeImageURL}')">
+onclick="shareWallpaper('${photo.pageURL}')">
 Share
 </button>
 
@@ -331,7 +329,7 @@ page++;
 
 document.getElementById("loader")
 .innerHTML =
-"API limit reached. Try later.";
+"API limit reached. Try again later.";
 
 }
 
@@ -358,14 +356,7 @@ document.getElementById("popup")
 
 function downloadWallpaper(url){
 
-let a =
-document.createElement("a");
-
-a.href = url;
-
-a.target = "_blank";
-
-a.click();
+window.open(url,"_blank");
 
 }
 
@@ -375,14 +366,14 @@ if(navigator.share){
 
 navigator.share({
 
-title:"Wallpaper",
+title:"AI Wallpaper",
 url:url
 
 });
 
 }else{
 
-alert("Sharing not supported");
+window.open(url,"_blank");
 
 }
 
