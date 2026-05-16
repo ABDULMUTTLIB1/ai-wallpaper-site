@@ -1,3 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>🔥 AI Wallpapers</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#050505;
+color:white;
+overflow-x:hidden;
+}
+
+h1{
+text-align:center;
+padding:20px;
+font-size:38px;
+}
+
+.topbar{
+display:flex;
+justify-content:center;
+gap:10px;
+flex-wrap:wrap;
+padding:10px;
+}
+
+input,select{
+
+padding:14px;
+border:none;
+border-radius:12px;
+background:#1b1b1b;
+color:white;
+font-size:16px;
+
+}
+
+input{
+width:250px;
+}
+
+button{
+
+padding:14px 18px;
+border:none;
+border-radius:12px;
+
+background:
+linear-gradient(45deg,#ff0080,#ff3b3b);
+
+color:white;
+font-weight:bold;
+cursor:pointer;
+
+}
+
+#gallery{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(220px,1fr));
+
+gap:15px;
+
+padding:15px;
+
+}
+
+.card{
+
+background:#111;
+border-radius:18px;
+overflow:hidden;
+border:1px solid #333;
+
+}
+
+.card img{
+
+width:100%;
+height:350px;
+object-fit:cover;
+display:block;
+cursor:pointer;
+
+}
+
+.buttons{
+
+display:flex;
+gap:8px;
+padding:10px;
+
+}
+
+.btn{
+flex:1;
+}
+
+#popup{
+
+position:fixed;
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+background:rgba(0,0,0,0.96);
+
+display:none;
+
+flex-direction:column;
+justify-content:center;
+align-items:center;
+
+z-index:999;
+
+padding:20px;
+
+}
+
+#popup img{
+
+max-width:95%;
+max-height:75%;
+border-radius:20px;
+
+}
+
+.popupButtons{
+
+display:flex;
+gap:12px;
+margin-top:20px;
+
+}
+
+.close{
+
+position:absolute;
+top:20px;
+right:25px;
+
+font-size:35px;
+cursor:pointer;
+color:white;
+
+}
+
+#loader{
+
+text-align:center;
+padding:20px;
+font-size:20px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>🔥 AI Wallpapers</h1>
+
+<div class="topbar">
+
+<input
+type="text"
+id="search"
+placeholder="Search wallpapers...">
+
+<select id="device">
+
+<option value="">
+🖥️ Computer / 4K
+</option>
+
+<option value="vertical">
+📱 Mobile
+</option>
+
+<option value="horizontal">
+💻 Desktop
+</option>
+
+</select>
+
+<button onclick="searchWallpapers(true)">
+Search
+</button>
+
+</div>
+
+<div id="loader">
+Loading Wallpapers...
+</div>
+
+<div id="gallery"></div>
+
+<div id="popup">
+
+<span
+class="close"
+onclick="closePopup()">
+✖
+</span>
+
+<img id="popupImg">
+
+<div class="popupButtons">
+
+<button id="popupDownload">
+Download
+</button>
+
+<button id="popupShare">
+Share
+</button>
+
+</div>
+
+</div>
+
 <script>
 
 const API_KEY =
@@ -12,9 +253,16 @@ if(loading) return;
 
 loading = true;
 
+const gallery =
+document.getElementById("gallery");
+
+const loader =
+document.getElementById("loader");
+
 let query =
 document.getElementById("search")
-.value.trim();
+.value
+.trim();
 
 if(query === ""){
 query = "wallpaper";
@@ -24,8 +272,7 @@ if(reset){
 
 page = 1;
 
-document.getElementById("gallery")
-.innerHTML = "";
+gallery.innerHTML = "";
 
 }
 
@@ -33,32 +280,20 @@ let orientation =
 document.getElementById("device")
 .value;
 
-let orientationQuery = "";
-
-if(orientation !== ""){
-
-orientationQuery =
-`&orientation=${orientation}`;
-
-}
-
-document.getElementById("loader")
-.innerHTML =
+loader.innerHTML =
 "Loading Wallpapers...";
 
 try{
 
-let url =
-`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo${orientationQuery}&per_page=16&page=${page}&safesearch=true`;
+const response =
+await fetch(
 
-let response =
-await fetch(url);
+`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo&orientation=${orientation}&per_page=16&page=${page}&safesearch=true`
 
-let data =
+);
+
+const data =
 await response.json();
-
-let gallery =
-document.getElementById("gallery");
 
 data.hits.forEach(photo => {
 
@@ -114,17 +349,15 @@ Share
 
 });
 
-document.getElementById("loader")
-.innerHTML =
-"Scroll down for more wallpapers";
-
 page++;
+
+loader.innerHTML =
+"Scroll for more wallpapers";
 
 }catch(error){
 
-document.getElementById("loader")
-.innerHTML =
-"API limit reached. Wait a little.";
+loader.innerHTML =
+"API Error / Rate limit";
 
 }
 
@@ -132,27 +365,21 @@ loading = false;
 
 }
 
-function openPopup(imageUrl){
+function openPopup(url){
 
 document.getElementById("popup")
 .style.display = "flex";
 
 document.getElementById("popupImg")
-.src = imageUrl;
+.src = url;
 
 document.getElementById("popupDownload")
-.onclick = function(){
-
-downloadWallpaper(imageUrl);
-
-};
+.onclick = () =>
+downloadWallpaper(url);
 
 document.getElementById("popupShare")
-.onclick = function(){
-
-shareWallpaper(imageUrl);
-
-};
+.onclick = () =>
+shareWallpaper(url);
 
 }
 
@@ -163,23 +390,14 @@ document.getElementById("popup")
 
 }
 
-async function downloadWallpaper(url){
-
-try{
-
-const response =
-await fetch(url);
-
-const blob =
-await response.blob();
-
-const blobUrl =
-window.URL.createObjectURL(blob);
+function downloadWallpaper(url){
 
 const a =
 document.createElement("a");
 
-a.href = blobUrl;
+a.href = url;
+
+a.target = "_blank";
 
 a.download =
 "wallpaper.jpg";
@@ -188,15 +406,7 @@ document.body.appendChild(a);
 
 a.click();
 
-a.remove();
-
-window.URL.revokeObjectURL(blobUrl);
-
-}catch{
-
-alert("Download failed");
-
-}
+document.body.removeChild(a);
 
 }
 
@@ -222,12 +432,14 @@ window.open(url,"_blank");
 window.addEventListener("scroll",()=>{
 
 if(
+
 window.innerHeight +
 window.scrollY >=
-document.body.offsetHeight - 700
+document.body.offsetHeight - 1000
+
 ){
 
-searchWallpapers(false);
+searchWallpapers();
 
 }
 
@@ -236,3 +448,6 @@ searchWallpapers(false);
 searchWallpapers();
 
 </script>
+
+</body>
+</html>
