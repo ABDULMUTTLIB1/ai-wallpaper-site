@@ -4,7 +4,6 @@
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
@@ -399,7 +398,7 @@ document.getElementById("popupImg")
 document.getElementById("popupDownload")
 .onclick = function(){
 
-window.open(downloadUrl,"_blank");
+downloadWallpaper(downloadUrl);
 
 };
 
@@ -421,7 +420,18 @@ document.getElementById("popup")
 
 function downloadWallpaper(url){
 
-window.open(url,"_blank");
+const link =
+document.createElement("a");
+
+link.href = url;
+
+link.download = "wallpaper.jpg";
+
+document.body.appendChild(link);
+
+link.click();
+
+document.body.removeChild(link);
 
 }
 
