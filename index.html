@@ -1,234 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>🔥 AI Wallpapers</title>
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
-
-body{
-background:#050505;
-color:white;
-overflow-x:hidden;
-}
-
-h1{
-text-align:center;
-padding:20px;
-font-size:38px;
-}
-
-.topbar{
-display:flex;
-justify-content:center;
-gap:10px;
-flex-wrap:wrap;
-padding:10px;
-}
-
-input,select{
-
-padding:14px;
-border:none;
-border-radius:12px;
-background:#1b1b1b;
-color:white;
-font-size:16px;
-
-}
-
-input{
-width:250px;
-}
-
-button{
-
-padding:14px 18px;
-border:none;
-border-radius:12px;
-background:linear-gradient(45deg,#ff0080,#ff3b3b);
-color:white;
-font-weight:bold;
-cursor:pointer;
-
-}
-
-#gallery{
-
-display:grid;
-
-grid-template-columns:
-repeat(auto-fit,minmax(220px,1fr));
-
-gap:15px;
-padding:15px;
-
-}
-
-.card{
-
-background:#111;
-border-radius:18px;
-overflow:hidden;
-border:1px solid #333;
-
-}
-
-.card img{
-
-width:100%;
-height:350px;
-object-fit:cover;
-display:block;
-cursor:pointer;
-
-}
-
-.buttons{
-
-display:flex;
-gap:8px;
-padding:10px;
-
-}
-
-.btn{
-flex:1;
-}
-
-#popup{
-
-position:fixed;
-top:0;
-left:0;
-
-width:100%;
-height:100%;
-
-background:rgba(0,0,0,0.96);
-
-display:none;
-
-flex-direction:column;
-justify-content:center;
-align-items:center;
-
-z-index:999;
-
-padding:20px;
-
-}
-
-#popup img{
-
-max-width:95%;
-max-height:75%;
-border-radius:20px;
-
-}
-
-.popupButtons{
-
-display:flex;
-gap:10px;
-margin-top:20px;
-
-}
-
-.close{
-
-position:absolute;
-top:20px;
-right:25px;
-
-font-size:35px;
-cursor:pointer;
-
-}
-
-#loader{
-
-text-align:center;
-padding:20px;
-
-}
-
-</style>
-
-</head>
-
-<body>
-
-<h1>🔥 AI Wallpapers</h1>
-
-<div class="topbar">
-
-<input
-type="text"
-id="search"
-placeholder="Search wallpapers...">
-
-<select id="device">
-
-<option value="">
-🖥️ Computer / 4K
-</option>
-
-<option value="vertical">
-📱 Mobile
-</option>
-
-<option value="horizontal">
-💻 Desktop
-</option>
-
-</select>
-
-<button onclick="searchWallpapers(true)">
-Search
-</button>
-
-</div>
-
-<div id="loader">
-Loading Wallpapers...
-</div>
-
-<div id="gallery"></div>
-
-<div id="popup">
-
-<span class="close"
-onclick="closePopup()">
-✖
-</span>
-
-<img id="popupImg">
-
-<div class="popupButtons">
-
-<button id="popupDownload">
-Download
-</button>
-
-<button id="popupShare">
-Share
-</button>
-
-</div>
-
-</div>
-
 <script>
 
 const API_KEY =
@@ -298,13 +67,14 @@ gallery.innerHTML += `
 <div class="card">
 
 <img
-src="${photo.previewURL}"
+
+src="${photo.webformatURL}"
+
 loading="lazy"
 
 onclick="
 openPopup(
-'${photo.webformatURL}',
-'${photo.pageURL}'
+'${photo.largeImageURL}'
 )
 ">
 
@@ -312,22 +82,28 @@ openPopup(
 
 <button
 class="btn"
+
 onclick="
 downloadWallpaper(
-'${photo.pageURL}'
+'${photo.largeImageURL}'
 )
 ">
+
 Download
+
 </button>
 
 <button
 class="btn"
+
 onclick="
 shareWallpaper(
-'${photo.pageURL}'
+'${photo.largeImageURL}'
 )
 ">
+
 Share
+
 </button>
 
 </div>
@@ -348,7 +124,7 @@ page++;
 
 document.getElementById("loader")
 .innerHTML =
-"Rate limit exceeded";
+"API limit reached. Wait a little.";
 
 }
 
@@ -356,7 +132,7 @@ loading = false;
 
 }
 
-function openPopup(imageUrl,pageUrl){
+function openPopup(imageUrl){
 
 document.getElementById("popup")
 .style.display = "flex";
@@ -367,14 +143,14 @@ document.getElementById("popupImg")
 document.getElementById("popupDownload")
 .onclick = function(){
 
-window.open(pageUrl,"_blank");
+downloadWallpaper(imageUrl);
 
 };
 
 document.getElementById("popupShare")
 .onclick = function(){
 
-shareWallpaper(pageUrl);
+shareWallpaper(imageUrl);
 
 };
 
@@ -387,9 +163,40 @@ document.getElementById("popup")
 
 }
 
-function downloadWallpaper(url){
+async function downloadWallpaper(url){
 
-window.open(url,"_blank");
+try{
+
+const response =
+await fetch(url);
+
+const blob =
+await response.blob();
+
+const blobUrl =
+window.URL.createObjectURL(blob);
+
+const a =
+document.createElement("a");
+
+a.href = blobUrl;
+
+a.download =
+"wallpaper.jpg";
+
+document.body.appendChild(a);
+
+a.click();
+
+a.remove();
+
+window.URL.revokeObjectURL(blobUrl);
+
+}catch{
+
+alert("Download failed");
+
+}
 
 }
 
@@ -429,6 +236,3 @@ searchWallpapers(false);
 searchWallpapers();
 
 </script>
-
-</body>
-</html>
