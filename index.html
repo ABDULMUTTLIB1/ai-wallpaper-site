@@ -3,7 +3,8 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>🔥 AI Wallpapers</title>
 
@@ -91,7 +92,6 @@ height:350px;
 object-fit:cover;
 display:block;
 cursor:pointer;
-background:#111;
 
 }
 
@@ -283,7 +283,7 @@ document.getElementById("loader")
 try{
 
 let url =
-`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo${orientationQuery}&per_page=8&page=${page}&safesearch=true`;
+`https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(query)}&image_type=photo${orientationQuery}&per_page=16&page=${page}&safesearch=true`;
 
 let response =
 await fetch(url);
@@ -291,7 +291,7 @@ await fetch(url);
 let data =
 await response.json();
 
-if(data.totalHits === 0){
+if(data.hits.length === 0){
 
 document.getElementById("loader")
 .innerHTML =
@@ -318,7 +318,7 @@ loading="lazy"
 onclick="
 openPopup(
 '${photo.largeImageURL}',
-'${photo.pageURL}'
+'${photo.largeImageURL}'
 )
 "
 
@@ -366,7 +366,7 @@ page++;
 
 document.getElementById("loader")
 .innerHTML =
-"Rate limit reached. Wait a little.";
+"Rate limit exceeded. Wait 5 minutes.";
 
 }
 
@@ -374,7 +374,7 @@ loading = false;
 
 }
 
-function openPopup(imageUrl,pageUrl){
+function openPopup(imageUrl,downloadUrl){
 
 document.getElementById("popup")
 .style.display = "flex";
@@ -385,14 +385,14 @@ document.getElementById("popupImg")
 document.getElementById("popupDownload")
 .onclick = function(){
 
-downloadWallpaper(imageUrl);
+window.open(downloadUrl,"_blank");
 
 };
 
 document.getElementById("popupShare")
 .onclick = function(){
 
-shareWallpaper(pageUrl);
+shareWallpaper(downloadUrl);
 
 };
 
@@ -435,7 +435,7 @@ window.addEventListener("scroll",()=>{
 if(
 window.innerHeight +
 window.scrollY >=
-document.body.offsetHeight - 100
+document.body.offsetHeight - 700
 ){
 
 searchWallpapers(false);
