@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>🔥 AI Wallpapers</title>
 
@@ -58,10 +56,7 @@ button{
 padding:14px 18px;
 border:none;
 border-radius:12px;
-
-background:
-linear-gradient(45deg,#ff0080,#ff3b3b);
-
+background:linear-gradient(45deg,#ff0080,#ff3b3b);
 color:white;
 font-weight:bold;
 cursor:pointer;
@@ -76,7 +71,6 @@ grid-template-columns:
 repeat(auto-fit,minmax(220px,1fr));
 
 gap:15px;
-
 padding:15px;
 
 }
@@ -121,7 +115,7 @@ left:0;
 width:100%;
 height:100%;
 
-background:rgba(0,0,0,0.97);
+background:rgba(0,0,0,0.96);
 
 display:none;
 
@@ -146,7 +140,7 @@ border-radius:20px;
 .popupButtons{
 
 display:flex;
-gap:12px;
+gap:10px;
 margin-top:20px;
 
 }
@@ -159,7 +153,6 @@ right:25px;
 
 font-size:35px;
 cursor:pointer;
-color:white;
 
 }
 
@@ -167,7 +160,6 @@ color:white;
 
 text-align:center;
 padding:20px;
-font-size:20px;
 
 }
 
@@ -216,8 +208,7 @@ Loading Wallpapers...
 
 <div id="popup">
 
-<span
-class="close"
+<span class="close"
 onclick="closePopup()">
 ✖
 </span>
@@ -244,7 +235,6 @@ const API_KEY =
 "55804332-c39398bb2e0b02b325f1b6ce6";
 
 let page = 1;
-
 let loading = false;
 
 async function searchWallpapers(reset=false){
@@ -255,8 +245,7 @@ loading = true;
 
 let query =
 document.getElementById("search")
-.value
-.trim();
+.value.trim();
 
 if(query === ""){
 query = "wallpaper";
@@ -299,18 +288,6 @@ await fetch(url);
 let data =
 await response.json();
 
-if(!data.hits || data.hits.length === 0){
-
-document.getElementById("loader")
-.innerHTML =
-"No wallpapers found";
-
-loading = false;
-
-return;
-
-}
-
 let gallery =
 document.getElementById("gallery");
 
@@ -321,15 +298,13 @@ gallery.innerHTML += `
 <div class="card">
 
 <img
-
 src="${photo.previewURL}"
-
 loading="lazy"
 
 onclick="
 openPopup(
 '${photo.webformatURL}',
-'${photo.largeImageURL}'
+'${photo.pageURL}'
 )
 ">
 
@@ -337,28 +312,22 @@ openPopup(
 
 <button
 class="btn"
-
 onclick="
 downloadWallpaper(
-'${photo.largeImageURL}'
+'${photo.pageURL}'
 )
 ">
-
 Download
-
 </button>
 
 <button
 class="btn"
-
 onclick="
 shareWallpaper(
 '${photo.pageURL}'
 )
 ">
-
 Share
-
 </button>
 
 </div>
@@ -379,7 +348,7 @@ page++;
 
 document.getElementById("loader")
 .innerHTML =
-"Rate limit exceeded. Wait a little.";
+"Rate limit exceeded";
 
 }
 
@@ -387,7 +356,7 @@ loading = false;
 
 }
 
-function openPopup(imageUrl,downloadUrl){
+function openPopup(imageUrl,pageUrl){
 
 document.getElementById("popup")
 .style.display = "flex";
@@ -398,14 +367,14 @@ document.getElementById("popupImg")
 document.getElementById("popupDownload")
 .onclick = function(){
 
-downloadWallpaper(downloadUrl);
+window.open(pageUrl,"_blank");
 
 };
 
 document.getElementById("popupShare")
 .onclick = function(){
 
-shareWallpaper(downloadUrl);
+shareWallpaper(pageUrl);
 
 };
 
@@ -420,18 +389,7 @@ document.getElementById("popup")
 
 function downloadWallpaper(url){
 
-const link =
-document.createElement("a");
-
-link.href = url;
-
-link.download = "wallpaper.jpg";
-
-document.body.appendChild(link);
-
-link.click();
-
-document.body.removeChild(link);
+window.open(url,"_blank");
 
 }
 
